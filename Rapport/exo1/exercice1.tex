@@ -1,0 +1,27 @@
+\chapter{Comparaison des algorithmes}
+
+\section{Question 1 : }
+
+The Schrödinger equation can describe the state of any quantum system: 
+\begin{equation}
+    t>0, \quad i\hbar\frac{\partial \Psi}{\partial t}(x,t) = \bigg(-\frac{\hbar^{2}}{2m}\frac{\partial^{2}}{\partial x^{2}}+V(x)\bigg)\Psi(x,t)=E\Psi(x,t)
+\end{equation}
+
+By using the separation of variables method we obtain the following expression for the wave function:
+%\begin{figure}[H]
+%\centering
+%\includegraphics[scale=.4]{exo1/img/temp.png}
+%\end{figure}
+
+$$
+\forall x, \forall t\geq 0: \Psi(x,t)=\phi(x) \nu(t) \Rightarrow \frac{\partial \Psi}{\partial t}(x, t)= \phi(x) \nu'(t)~ and~ \frac{\partial^2\Psi}{\partial x^2}(x, t)=\phi''(x)\nu(t)
+$$
+
+By substituting in the Schrödinger equation, we find that: 
+
+$$
+\underbrace{-\frac{\hbar^2}{2m} \frac{\phi''(x)}{\phi(x)}+V(x)}_{X}=\underbrace{ i \hbar \frac{\nu'(t) }{\nu(t)}}_{T}
+$$
+
+$X$ only depends on the space variable $x$, and $T$ only depends on the time variable $t$. And since $X=T$, we have $X=T=E$, with $E$ a constant that is homogeneous to an energy (same unit as $V(x))$.\\
+By solving $i \hbar \frac{\nu'(t) }{\nu(t)}=E$, we have that $\nu(t)=A~ e^{-i\frac{E}{h}t}$, with $A$ a constant that is independent from $t$, so we can integrate it to $\phi(x)$.
