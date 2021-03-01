@@ -1,4 +1,5 @@
 %% Première question
+
 T=10;
 N=5000;
 x=0.5;
