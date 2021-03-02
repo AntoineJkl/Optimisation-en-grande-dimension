@@ -1,4 +1,4 @@
-function [U,Lambda,Mu,k] = Uzawa(A,b,d_eq,C_eq,C_in,d_in,pho,mu_ini,lambda_ini,eps,kmax)
+function [U,Lambda,Mu,k] = Uzawa(A,b,C_eq,d_eq,C_in,d_in,pho,mu_ini,lambda_ini,eps,kmax)
 %UZAWA Summary of this function goes here
 %   Detailed explanation goes here
 

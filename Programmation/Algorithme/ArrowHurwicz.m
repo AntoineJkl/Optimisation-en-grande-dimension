@@ -1,4 +1,4 @@
-function [U,Lambda,Mu,k] = ArrowHurwicz(A,b,d_eq,C_eq,C_in,d_in,rho1,rho2,mu_ini,lambda_ini,eps,kmax)
+function [U,Lambda,Mu,k] = ArrowHurwicz(A,b,C_eq,d_eq,C_in,d_in,rho1,rho2,mu_ini,lambda_ini,eps,kmax)
     
     %Arguments d'entree
     switch nargin 

@@ -13,4 +13,4 @@ d_in=[1 ; 1];
 C_in=[ 2 , -1 ; -1 , 2 ];
 Mu=[0 ; 0];
 
-[U,Lambda,Mu,k]=Uzawa(A,b,d_eq,C_eq,C_in,d_in,pho,Mu,Lambda,eps,kmax);
+[U,Lambda,Mu,k]=Uzawa(A,b,C_eq,d_eq,C_in,d_in,pho,Mu,Lambda,eps,kmax);

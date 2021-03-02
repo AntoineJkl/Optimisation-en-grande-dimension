@@ -14,5 +14,5 @@ C_eq = 0;
 d_eq = 0;
 Mu = [0;0];
 
-[U,Lambda,Mu,k] = ArrowHurwicz(A,b,d_eq,C_eq,C_in,d_in,rho1,rho2,Mu,Lambda,eps,kmax);
+[U,Lambda,Mu,k] = ArrowHurwicz(A,b,C_eq,d_eq,C_in,d_in,rho1,rho2,Mu,Lambda,eps,kmax);
 
