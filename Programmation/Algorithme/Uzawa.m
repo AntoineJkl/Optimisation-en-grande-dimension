@@ -24,12 +24,12 @@ function [U,Lambda,Mu,k] = Uzawa(A,b,C_eq,d_eq,C_in,d_in,pho,mu_ini,lambda_ini,e
     
     %Résolution problème
     while ( k<=2 || ( norm(U-prec,2)/norm(U,2)  > eps ) && ( k<=kmax ) )  
-        
+
         %Stockage de u précédent
         prec=U;
         
         %Annulation du gradient du lagrangien
-        U= (2*A)\(b-C_in'*Mu-C_eq'*Lambda) ; 
+        U = (2*A)\(b-C_in'*Mu-C_eq'*Lambda); 
         
         %Mis à jour des multiplicateurs de Lagrange
         Mu=max(0, Mu+pho.*(C_in*U-d_in));
