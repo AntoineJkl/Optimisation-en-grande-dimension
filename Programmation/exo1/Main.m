@@ -76,8 +76,8 @@ kmax = 10000;
 
 %% Question 3
 
-Test_prix1 = Test_KKT(A1,b1,C1,0,p1_prix,0,0,0,u1_prix);
-Test_prix2 = Test_KKT(A2,b2,C2,0,p2_prix,0,0,0,u2_prix);
-Test_prix3 = Test_KKT(A3,b3,C3,0,p3_prix,0,0,0,u3_prix);
-Test_prix4 = Test_KKT(A4,b4,C4,0,p4_prix,0,0,0,u4_prix);
+Test_prix1 = Test_KKT(A1,b1,C1,0,p1_prix,0,0,0,u1_prix,0.01);
+Test_prix2 = Test_KKT(A2,b2,C2,0,p2_prix,0,0,0,u2_prix,0.01);
+Test_prix3 = Test_KKT(A3,b3,C3,0,p3_prix,0,0,0,u3_prix,0.01);
+Test_prix4 = Test_KKT(A4,b4,C4,0,p4_prix,0,0,0,u4_prix,0.01);
 
