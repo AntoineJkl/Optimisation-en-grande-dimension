@@ -18,4 +18,4 @@ rho = 0.1;
 eps = 10^(-6);
 kmax = 4000;
 
-[u1_prix,p1_prix,k1_prix,J1_prix] = DecompositionPrix(N1,A1,C1,rho,eps,kmax);
+[u1_prix,v1_prix,p1_prix,k1_prix,J1_prix] = DecompositionPrix(N1,A1,C1,rho,eps,kmax);

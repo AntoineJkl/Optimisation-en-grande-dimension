@@ -1,4 +1,4 @@
-function [u,p,k,J] = DecompositionPrix(N,A,C,rho,eps,kmax)
+function [u,v,p,k,J] = DecompositionPrix(N,A,C,rho,eps,kmax)
     %N : taille de l'instance du problème
     %A : matrice de la fonction objective de taille (N+1,2,2)
     %C : matrice de contraintes associée aux sous-problèmes de taille (N+1,2)
@@ -23,6 +23,10 @@ function [u,p,k,J] = DecompositionPrix(N,A,C,rho,eps,kmax)
     kmax_sp = 10000;
     
     while( k <= 2 || ((norm(u - u_prec,2)/norm(u,2) + norm(p - p_prec,2)/norm(p,2) + norm(v - v_prec,2)/norm(v,2) > eps) && k <= kmax))
+        
+        %Initialisation de la valeur optimale
+        J=0;
+        
         u_prec = u;
         v_prec = v;
         p_prec = p;
@@ -35,18 +39,21 @@ function [u,p,k,J] = DecompositionPrix(N,A,C,rho,eps,kmax)
             b_sp = zeros(4,1); %u1,u2,v1,v2
             b_sp(1:2,1)=p;
             
-            C_in=[1 0 0 0 ; -1 0 0 0 ; 0 1 0 0 ; 0 -1 0 0 ];
-            d_in=[C(i,1) ; 0 ; C(i,2)-C(i,1) ; 0 ];
+            C_in=[1 0 0 0 ; -1 0 0 0 ; 0 1 0 0 ; 0 -1 0 0 ; -1 0 -1 0];
+            d_in=[C(i,1) ; 0 ; C(i,2)-C(i,1) ; 0 ; C(i,1)];
             
             C_eq=ones(1,4);
             d_eq=C(i,2);
             
-            mu_ini=zeros(4,1);
+            mu_ini=zeros(5,1);
             lambda_ini=0;
             
-            [temp,~,~,~] = Uzawa(A_sp,b_sp,C_eq,d_eq,C_in,d_in,rho_sp,mu_ini,lambda_ini,eps_sp,kmax_sp);
+            [temp,~,~,~] = ArrowHurwicz(A_sp,b_sp,C_eq,d_eq,C_in,d_in,rho_sp,rho_sp,mu_ini,lambda_ini,eps_sp,kmax_sp);
             u(i,:)=temp(1:2);
             v(i,:)=temp(3:4);
+            
+            %Incrementation de la valeur objective J
+            J=J+temp'*A_sp*temp;
             
         end
         
@@ -59,9 +66,6 @@ function [u,p,k,J] = DecompositionPrix(N,A,C,rho,eps,kmax)
         %Incrementation du nombre d'iterations:
         k = k + 1;
     end
-    
-    %Calcul de la valeur optimale
-    J = 0; %1/2*u'*A*u - b'*u
 
     toc;
 end
