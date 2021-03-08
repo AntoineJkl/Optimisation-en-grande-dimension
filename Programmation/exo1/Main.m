@@ -18,7 +18,8 @@ x_value = -2:.01:2; y_value = -2:.01:2;
 z = ind(X,Y);
 objet = pcolor(x_value,y_value,z);
 set(objet,'EdgeColor','none');
-set(objet,'facealpha',0.5);
+set(objet,'facealpha',0.3);
+colormap(winter);
 hold off
 
 title({'Ensemble des solutions','admissibles de J(u)'});
@@ -36,23 +37,23 @@ N1 = 2;
 [A1,b1,C1] = CreateInstance(N1);
 rho = 0.1;
 eps = 10^(-6);
-kmax = 10000;
+kmax = 4000;
 [u1_prix,p1_prix,k1_prix,J1_prix] = DecompositionPrix(N1,A1,b1,C1,rho,eps,kmax);
 [u1_alloc,omega1_alloc,k1_alloc,J1_alloc] = DecompositionQuantites(N1,A1,b1,C1,eps,kmax);
 [u1_pred,omega1_pred,k1_pred,J1_pred] = DecompositionPrediction(N1,A1,b1,C1,eps,kmax);
 
-%Pour N = 3:
+%% Pour N = 3:
 %   Solution: u* = (1;-1;0) et J(u*) = -1
 N2 = 3;
 [A2,b2,C2] = CreateInstance(N2);
 rho = 0.1;
 eps = 10^(-5);
-kmax = 10000;
+kmax = 4000;
 [u2_prix,p2_prix,k2_prix,J2_prix] = DecompositionPrix(N2,A2,b2,C2,rho,eps,kmax);
 [u2_alloc,omega2_alloc,k2_alloc,J2_alloc] = DecompositionQuantites(N2,A2,b2,C2,eps,kmax);
 [u2_pred,omega2_pred,k2_pred,J2_pred] = DecompositionPrediction(N2,A2,b2,C2,eps,kmax);
 
-%Pour N = 4:
+%% Pour N = 4:
 %   Solution: u* = (1;-6/5;3/5;-1) et J(u*) = -19/10
 N3 = 4;
 [A3,b3,C3] = CreateInstance(N3);
@@ -63,7 +64,7 @@ kmax = 10000;
 [u3_alloc,omega3_alloc,k3_alloc,J3_alloc] = DecompositionQuantites(N3,A3,b3,C3,eps,kmax);
 [u3_pred,omega3_pred,k3_pred,J3_pred] = DecompositionPrediction(N3,A3,b3,C3,eps,kmax);
 
-%Pour N = 5:
+%% Pour N = 5:
 %   Solution: u* = (1;-1.2;0.6;-1;0) et J(u*) = -1.9
 N4 = 5;
 [A4,b4,C4] = CreateInstance(N4);

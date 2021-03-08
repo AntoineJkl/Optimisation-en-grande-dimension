@@ -19,7 +19,7 @@ function [P,omega,k,J] = DecompositionQuantites(N,P0,a,b,Pmax,eps,kmax)
         disp(['Iteration: ',num2str(k)]);
         
         %Mise a jour du pas:
-        rho = 1/k^2;
+        rho = 0.01;
         P_prec = P;
         omega_prec = omega;
         

@@ -1,4 +1,6 @@
 function [OK] = Test_KKT(A,b,C_in,d_in,mu,C_eq,d_eq,lambda,u,tolerance)
+    %lambda -> contraintes egalites
+    %mu -> contraintes inegalites
     %Contraintes d'inégalite:
     condition1 = C_in*u - d_in <= tolerance;
     bool1 = prod(condition1);
