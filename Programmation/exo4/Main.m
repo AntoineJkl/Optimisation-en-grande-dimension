@@ -1,3 +1,4 @@
+
 %SCENARIO 1 (Decomposition par les prix)
 
 %Donnees du probleme:
@@ -76,7 +77,7 @@ disp(['- Tramway 2: ',num2str(P(14)),' MW']);
 disp(['- Hopital: ',num2str(P(15)),' MW']);
 
 %Solution exacte:
-P_exact = [8.68; 2; 2; 2; 2; 2; 4.08; 2; 2; -9.98; -7.39; -8.98; -0.1; -0.11; -0.2];
+P_exact = [8.68; 2; 2; 2; 2; 2; 4.08; 2; 2; -9.98; -7.39; -8.98; -0.10; -0.11; -0.2];
 J = @(P) sum(a.*(P - P0).^2 + b);
 
 J_theo = J(P_exact);
@@ -88,8 +89,8 @@ J_theo = J(P_exact);
 Donnees_SmartGrids_Scenario1;
 
 %Initialisation:
-eps = 10^(-3);
-kmax = 3000;
+eps = 10^(-5);
+kmax = 5000;
 
 %Algorithme de decomposition par les prix:
 [P,omega,k,J_opt] = DecompositionQuantites(N,P0,a,b,Pmax,eps,kmax);
