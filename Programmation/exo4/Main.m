@@ -5,7 +5,7 @@
 Donnees_SmartGrids_Scenario1;
 
 %Initialisation:
-eps = 10^(-10);
+eps = 10^(-15);
 kmax = 2000;
 rho = 0.1;
 
@@ -138,7 +138,7 @@ kmax = 3000;
 
 %Affichage solution finale:
 disp(' ');
-disp('SCENARIO 1');
+disp('SCENARIO 2');
 disp(['Nombre d iterations: ',num2str(k)]);
 disp(['Valeur optimale: ',num2str(J_opt)]);
 disp('Puissances des agents:');

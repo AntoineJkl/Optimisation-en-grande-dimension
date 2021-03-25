@@ -20,9 +20,6 @@ function [P,omega,k,J] = DecompositionQuantites(N,P0,a,b,Pmax,eps,kmax)
     critere = 1;
     
     while( k <= 2 || (critere && k <= kmax))
-        if(abs(sum(P))> 10000)
-            break;
-        end
         disp(['Iteration: ',num2str(k)]);
         
         %Mise a jour du pas:
@@ -45,7 +42,7 @@ function [P,omega,k,J] = DecompositionQuantites(N,P0,a,b,Pmax,eps,kmax)
             %P(i) = omega(i); Lambda(i) = -2*a(i)*P(i) + 2*a(i)*P0(i);
         end
         %Coordination:
-        omega = omega + rho*(Lambda - repmat(1/N*sum(Lambda),N,1));
+        omega = omega + rho*(Lambda - repmat(mean(Lambda),N,1));
         
         %Incrementation du nombre d'iterations:
         k = k + 1;
