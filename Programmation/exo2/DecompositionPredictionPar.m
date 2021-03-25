@@ -1,4 +1,4 @@
-function [u,v,p,k,J] = DecompositionPrix(N,A,C,rho,eps,kmax)
+function [u,v,w,p,k,J] = DecompositionPredictionPar(N,A,C,eps,kmax)
     %N : taille de l'instance du problème
     %A : matrice de la fonction objective de taille (N+1,2,2)
     %C : matrice de contraintes associée aux sous-problèmes de taille (N,2)
@@ -16,6 +16,7 @@ function [u,v,p,k,J] = DecompositionPrix(N,A,C,rho,eps,kmax)
     u = zeros(N+1,2); %Solution u
     v = zeros(N,2);   %Solution v
     p = zeros(1,2); %Prix
+    w = zeros(1,2); % Allocation
     
     %Initialisation des hyperparamètres de Uzawa ou Arrow:
     rho_sp1 = 0.1;
@@ -23,7 +24,11 @@ function [u,v,p,k,J] = DecompositionPrix(N,A,C,rho,eps,kmax)
     eps_sp = 10^(-10);
     kmax_sp = 50000;
     
-    while( k <= 2 || ((norm(u - u_prec,2)/norm(u,2) + norm(p - p_prec,2)/norm(p,2) + norm(v - v_prec,2)/norm(v,2) > eps) && k <= kmax))
+    %Initialisation paramètre coordination
+    beta =0.5 ;
+    gamma =0.5 ;
+    
+    while( k <= 2 || ((norm(u - u_prec,2)/norm(u,2) + norm(p - p_prec,2)/norm(p,2) + norm(w - w_prec,2)/norm(p,2) + norm(v - v_prec,2)/norm(v,2) > eps) && k <= kmax))
         
         %Initialisation de la valeur optimale
         J=0;
@@ -31,6 +36,7 @@ function [u,v,p,k,J] = DecompositionPrix(N,A,C,rho,eps,kmax)
         u_prec = u;
         v_prec = v;
         p_prec = p;
+        w_prec = w;
         
         %Décomposition des N premiers sous-problèmes :
         for i = 1:N
@@ -60,8 +66,8 @@ function [u,v,p,k,J] = DecompositionPrix(N,A,C,rho,eps,kmax)
         end
         
         %Décomposition du N+1ème sous-problème
-        u(N+1,1)=p(1,1)/A(N+1,1,1); 
-        u(N+1,2)=p(1,2)/A(N+1,2,2);
+        u(N+1,:)=-w(1,:);
+        p(1,1)=u(N+1,1)*A(N+1,1,1) ; p(1,2)=u(N+1,2)*A(N+1,2,2);
         
         %Incrémentation de la valeur objective pour le N+1ème
         %sous-problèmes
@@ -70,12 +76,14 @@ function [u,v,p,k,J] = DecompositionPrix(N,A,C,rho,eps,kmax)
         J=J+(1/2)*(u(N+1,:)*A_sp*u(N+1,:)');
         
         %Coordination:
-        p = p + rho.*(sum(u(1:N,:),1)-u(N+1,:));
+        p = (1-beta).*p_prec +beta.*p;
+        w = (1-gamma)*w_prec -gamma*sum(u(1:N,:),1);
         
         %Incrementation du nombre d'iterations:
         k = k + 1;
     end
 
     toc;
+
 end
 
