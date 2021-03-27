@@ -48,7 +48,7 @@ function [u,omega,k,J] = DecompositionQuantites(N,A,b,C,eps,kmax)
         
         %Mise a jour du critere
         %critere = Test_KKT(A,b,C,0,sum(Mu,2),0,0,0,u,10^-1);
-        critere = (norm(u - u_prec,2)/norm(u,2) + norm(omega - omega_prec,2)/norm(omega,2) < eps);
+        critere = norm(u - u_prec,2)/norm(u,2) + norm(w - w_prec,2)/norm(w,2) + norm(v - v_prec,2)/norm(v,2) > eps
     end
     
     %Calcul de la valeur optimale
