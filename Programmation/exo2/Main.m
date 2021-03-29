@@ -142,3 +142,7 @@ kmax = 100;
 [u1_prix,v1_prix,p1_prix,k1_prix,J1_prix] = DecompositionPrix_par(N1,A1,C1,rho,eps,kmax);
 u1_prix
 v1_prix
+
+%%
+
+[A,C] = CreationInstance(3,1,10,0,1);
