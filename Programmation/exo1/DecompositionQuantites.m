@@ -10,8 +10,8 @@ function [u,omega,k,J] = DecompositionQuantites(N,A,b,C,eps,kmax)
     Mu = zeros(N,N); %Multiplicateurs
     
     %Initialisation des sous-problemes:
-    rho_sp = 0.2;
-    eps_sp = 10^(-8);
+    rho_sp = 0.01;
+    eps_sp = 10^(-4);
     kmax_sp = 10000;
     critere = 0;
     
@@ -24,15 +24,13 @@ function [u,omega,k,J] = DecompositionQuantites(N,A,b,C,eps,kmax)
         u_prec = u;
         omega_prec = omega;
         
-        %Pas pour la coordination (voir litterature Antoine GICQUEL et al. ):
-        %rho = 1/k;
         rho=0.1;
         
         %Décomposition:
         for i = 1:N
             A_sp = 1/2*A(i,i);
             b_sp = b(i);
-            mu_ini_sp = zeros(N,1);
+            mu_ini_sp = Mu(:,i);
             C_in_sp = C(:,i);
             d_in = omega(:,i);
             [u(i),~,Mu(:,i),~] = Uzawa(A_sp,b_sp,0,0,C_in_sp,d_in,rho_sp,mu_ini_sp,0,eps_sp,kmax_sp);
@@ -40,16 +38,13 @@ function [u,omega,k,J] = DecompositionQuantites(N,A,b,C,eps,kmax)
         
         %Coordination:
         omega = omega + rho*(Mu - repmat(mean(Mu,2),1,N));
-%         for i = 1:N
-%             omega(:,i) = omega(:,i) + rho.*(Mu(:,i)-(1/N).*sum(Mu,2));
-%         end
         
         %Incrementation du nombre d'iterations:
         k = k + 1;
         
         %Mise a jour du critere
         %critere = Test_KKT(A,b,C,0,sum(Mu,2),0,0,0,u,10^-1);
-        critere = (norm(u - u_prec,2)/norm(u,2) + norm(omega - omega_prec,2)/norm(omega,2) < eps);
+        critere = (norm(u - u_prec) < eps);
         %critere = (norm(omega - omega_prec,inf)/norm(omega,inf) < eps);
     end
     
