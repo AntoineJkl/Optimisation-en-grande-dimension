@@ -1,20 +1,13 @@
-function [U,Lambda,Mu,k] = Uzawa(A,b,C_eq,d_eq,C_in,d_in,pho,mu_ini,lambda_ini,eps,kmax)
+function [U,Lambda,Mu,k] = Uzawa(A,b,C_eq,d_eq,C_in,d_in,param)
 %UZAWA Summary of this function goes here
 %   Detailed explanation goes here
 
-    %Arguments d'entrée
-    switch nargin
-        case 7
-            mu_ini=zeros(size(C_in,1),1);
-            lambda_ini=zeros(size(C_eq,1),1);
-            kmax=10000;
-            eps = 10^(-5);
-        case 9
-            kmax=10000;
-            eps = 10^(-5);
-        case 10
-            kmax=10000;
-    end
+    %Arguments d'entree
+    if ismember('rho',fieldnames(param)) ; rho=param.rho ; else rho=0.1 ; end
+    if ismember('mu_ini',fieldnames(param)) ; mu_ini=param.mu_ini ; else mu_ini=zeros(size(C_in,1),1) ; end
+    if ismember('lambda_ini',fieldnames(param)) ; lambda_ini=param.lambda_ini ; else lambda_ini=zeros(size(C_eq,1),1) ; end
+    if ismember('eps',fieldnames(param)) ; eps=param.eps ; else eps=10^(-5) ; end
+    if ismember('kmax',fieldnames(param)) ; kmax=param.kmax ; else kmax=10000 ; end
     
     %Initialisation
     k=1;
@@ -32,8 +25,8 @@ function [U,Lambda,Mu,k] = Uzawa(A,b,C_eq,d_eq,C_in,d_in,pho,mu_ini,lambda_ini,e
         U = (2*A)\(b-C_in'*Mu-C_eq'*Lambda); 
         
         %Mis à jour des multiplicateurs de Lagrange
-        Mu=max(0, Mu+pho.*(C_in*U-d_in));
-        Lambda=Lambda+pho.*(C_eq*U-d_eq);
+        Mu=max(0, Mu+rho.*(C_in*U-d_in));
+        Lambda=Lambda+rho.*(C_eq*U-d_eq);
         
         %Incrémentation du nombre d'itérations
         k=k+1; 
