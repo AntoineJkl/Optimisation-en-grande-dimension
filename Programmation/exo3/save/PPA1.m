@@ -14,18 +14,18 @@ e = [5/4; 3];
 Re = 3/2;
 
 
-% N = 3; % nombre d'actions
-% Q = [3 1 0; 1 5 1; 0 1 2];
-% e = [1; 2; 3];
-% Re = 3;
+N = 3; % nombre d'actions
+Q = [3 1 0; 1 5 1; 0 1 2];
+e = [1; 2; 3];
+Re = 3;
 %----------------------- Variables du problème
 % décomposition de l'objectif
 QA = diag(diag(Q)); %partie additive
 QC = Q - QA; %partie couplante
 
 % contraintes
-theta = [-e'; ones(size(e')); -ones(size(e')); -eye(N)]; %theta i en colonnes
-v = [-Re; 1; -1; zeros(N,1)];
+theta = [-e'; ones(size(e')); -ones(size(e'))]; %theta i en colonnes
+v = [-Re; 1; -1];
 
 %-----------------------Initialisation des algorithmes
 tic
@@ -41,7 +41,7 @@ ppa.seuil = 1e-6;
 
 % prédiction par les prix
 prix = {};
-prix.p = zeros(size(v));
+prix.p = [0; 0; 0];
 prix.it = 1;
 prix.it_max = 500;
 prix.seuil = 1e-6;
@@ -56,6 +56,7 @@ while (ppa.k<=2 || ((err(u, u_prec) + err(ppa.p, ppa.p_prec))>ppa.seuil && ppa.k
     ppa.b = -1/2 * Q * u + QA * u;
     
     % prédiction par les prix
+    
     prix.it = 1;
     while(prix.it <= 1 || err(prix.p, prix.p_prec) > prix.seuil && prix.it < prix.it_max) 
         prix.p_prec = prix.p;

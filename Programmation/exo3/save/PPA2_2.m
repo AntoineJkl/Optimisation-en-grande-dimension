@@ -1,3 +1,5 @@
+addpath('..\Algorithme');
+
 clear all
 
 %----------------------- Données
@@ -8,10 +10,10 @@ e = [4; 5];
 De = 3/2;
 
 % jouet 2
-N = 2; % nombre d'actions
-Q = [5/3 3; 3 10/3];
-e = [5/4; 3];
-De = 3;
+% N = 2; % nombre d'actions
+% Q = [5/3 3; 3 10/3];
+% e = [5/4; 3];
+% De = 3;
 % [1 2]/3 -> 29/12
 
 %----------------------- Variables du problème
