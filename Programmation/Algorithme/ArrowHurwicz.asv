@@ -1,4 +1,4 @@
-function [U,Lambda,Mu,k] = ArrowHurwicz(A,b,C_eq,d_eq,C_in,d_in,param)
+function [U,Lambda,Mu,k] = ArrowHurwicz(A,b,C_eq,d_eq,C_in,d_in,rho1,rho2,mu_ini,lambda_ini,eps,kmax,U_ini)
     
     %Arguments d'entree
     if ismember('rho1',fieldnames(param)) ; rho1=param.rho1 ; else rho1=0.1 ; end
@@ -7,7 +7,20 @@ function [U,Lambda,Mu,k] = ArrowHurwicz(A,b,C_eq,d_eq,C_in,d_in,param)
     if ismember('lambda_ini',fieldnames(param)) ; lambda_ini=param.lambda_ini ; else lambda_ini=zeros(size(C_eq,1),1) ; end
     if ismember('eps',fieldnames(param)) ; eps=param.eps ; else eps=10^(-5) ; end
     if ismember('kmax',fieldnames(param)) ; kmax=param.kmax ; else kmax=10000 ; end
-    if ismember('U_ini',fieldnames(param)) ; U_ini=param.U_ini ; else U_ini=zeros(size(A,1),1); end
+    if ismember('U_ini',fieldnames(param)) ; U_ini=param.U_ini ; else U_inizeros=(size(A,1),1); end
+    
+    switch nargin 
+        case 8
+            mu_ini = zeros(size(C_in,1),1);
+            lambda_ini = zeros(size(C_eq,1),1);            
+            kmax = 10000;
+            eps = 10^(-5);
+        case 10
+            kmax = 10000;
+            eps = 10^(-5);
+        case 11
+            kmax = 10000;
+    end
     
     %Initialisation
     k = 1;
