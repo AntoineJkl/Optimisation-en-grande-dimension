@@ -6,7 +6,7 @@ N = 2; % nombre d'actions
 Q = [2 1; 1 2];
 e = [4; 5];
 De = 3/2;
-% [1 1]/2
+[1 1]/2
 % Minimize[{4x + 5y, x+y=1,x>=0,y>=0, 2*x^2 + 2*y^2 + 1*x*y <= 3}, {x, y}]
 
 % jouet 2
