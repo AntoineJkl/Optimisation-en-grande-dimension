@@ -16,7 +16,8 @@ function [u,v,w,k,J] = DecompositionQuantites(N,A,C,rho,eps,kmax)
     u = zeros(N+1,2); %Solution u
     v = zeros(N,2);   %Solution v
     w = ones(N+1,2)./N; %Quantités
-    w(N+1,:)=[-1 , -1];
+    w(1:N,:)=C;
+    w(N+1,:)=-sum(C,1); %[-1 , -1];
     p= zeros(N+1,2);
     
     %Initialisation des hyperparamètres de Uzawa ou Arrow:
@@ -27,7 +28,6 @@ function [u,v,w,k,J] = DecompositionQuantites(N,A,C,rho,eps,kmax)
     while( k <= 2 || ((norm(u - u_prec,2)/norm(u,2) + norm(w - w_prec,2)/norm(w,2) + norm(v - v_prec,2)/norm(v,2) > eps) && k <= kmax))
         %Initialisation de la valeur optimale
         J=0;
-        
         u_prec = u;
         v_prec = v;
         w_prec = w;

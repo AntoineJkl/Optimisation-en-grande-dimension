@@ -15,7 +15,7 @@ function [u,v,w,k,J] = DecompositionQuantites2(N,A,C,rho,eps,kmax)
     k = 1; %Iteration
     u = zeros(N+1,2); %Solution u
     v = zeros(N,2);   %Solution v
-    w = ones(N,2)./(2*N); %Quantités
+    w = C;%ones(N,2)./(N); %Quantités
     p= zeros(N+1,2);
     
     %Initialisation des hyperparamètres de Uzawa ou Arrow:
@@ -57,7 +57,7 @@ function [u,v,w,k,J] = DecompositionQuantites2(N,A,C,rho,eps,kmax)
         end
         
         %Décomposition du N+1ème sous-problème
-        u(N+1,:)=-sum(w,1);
+        u(N+1,:)=sum(w,1);
         p(N+1,1)=u(N+1,1)*A(N+1,1,1) ; p(N+1,2)=u(N+1,2)*A(N+1,2,2);
         
         %Incrémentation de la valeur objective pour le N+1ème
@@ -68,10 +68,11 @@ function [u,v,w,k,J] = DecompositionQuantites2(N,A,C,rho,eps,kmax)
         
         %Coordination:
         for i = 1:(N)
-            w(i,:) = w(i,:) + rho.*(p(i,:)-(1/(N+1)).*sum(p,1));
+            w(i,:) = w(i,:) + rho.*(p(i,:)-p(N+1,:));
             w(i,1)=min(max(0,w(i,1)),C(i,1));
             w(i,2)=min(max(0,w(i,2)),C(i,2)-C(i,1));
         end
+        
         %Incrementation du nombre d'iterations:
         k = k + 1;
     end
