@@ -25,7 +25,7 @@ function [u,p,k,J,t2] = DecompositionPrix(N,A,b,C,rho,eps,kmax)
                     'lambda_ini' , 0 , ...
                     'eps', eps_sp, ...
                     'kmax', kmax_sp);
-            [u(i),~,~,~] = Uzawa(A_sp,b_sp,0,0,0,0,param_sp);
+            [u(i),~,~,~] = Uzawa(A_sp,b_sp,0,0,0,0,rho_sp,0,0,eps_sp,kmax_sp);
         end
         %Coordination:
         p = max(0,p + rho*C*u);

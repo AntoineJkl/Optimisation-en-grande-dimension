@@ -1,5 +1,5 @@
-function [u,omega,k,J] = DecompositionQuantites(N,A,b,C,eps,kmax)
-    tic;
+function [u,omega,k,J,t2] = DecompositionQuantites(N,A,b,C,eps,kmax)
+    t1=tic;
     %Pour ajouter les algorithmes (Uzawa et Arrow)
     addpath('..\Algorithme');
 
@@ -10,7 +10,7 @@ function [u,omega,k,J] = DecompositionQuantites(N,A,b,C,eps,kmax)
     Mu = zeros(N,N); %Multiplicateurs
     
     %Initialisation des sous-problemes:
-    rho_sp = 0.01;
+    rho_sp = 0.1;
     eps_sp = 10^(-4);
     kmax_sp = 10000;
     critere = 0;
@@ -19,7 +19,7 @@ function [u,omega,k,J] = DecompositionQuantites(N,A,b,C,eps,kmax)
     
     while( k <= 2 || (~critere && k <= kmax) )
         
-        disp(['iteration: ',num2str(k)]);
+        %disp(['iteration: ',num2str(k)]);
         
         u_prec = u;
         omega_prec = omega;
@@ -33,7 +33,12 @@ function [u,omega,k,J] = DecompositionQuantites(N,A,b,C,eps,kmax)
             mu_ini_sp = Mu(:,i);
             C_in_sp = C(:,i);
             d_in = omega(:,i);
-            [u(i),~,Mu(:,i),~] = Uzawa(A_sp,b_sp,0,0,C_in_sp,d_in,rho_sp,mu_ini_sp,0,eps_sp,kmax_sp);
+            param_sp = struct('rho', rho_sp, ...
+                    'mu_ini' , mu_ini_sp , ...
+                    'lambda_ini' , 0 , ...
+                    'eps', eps_sp, ...
+                    'kmax', kmax_sp);
+            [u(i),~,Mu(:,i),~] = Uzawa(A_sp,b_sp,0,0,C_in_sp,d_in,param_sp);
         end
         
         %Coordination:
@@ -51,6 +56,6 @@ function [u,omega,k,J] = DecompositionQuantites(N,A,b,C,eps,kmax)
     %Calcul de la valeur optimale
     J = 1/2*u'*A*u - b'*u;
     
-    toc;
+    t2=toc(t1);
 end
 

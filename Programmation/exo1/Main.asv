@@ -100,11 +100,11 @@ k5_prix = zeros(N5,1); k5_alloc = zeros(N5,1); k5_pred = zeros(N5,1);
 t_prix = zeros(n,1); t_alloc = zeros(n,1); t_pred = zeros(n,1);
 
 
-% for i=1:n
-%     [~,~,k5_prix(i,:),~,t_prix(i,1)] = DecompositionPrix(N5,A5,b5,C5,rho,eps_vec(i),kmax);
-%     [~,~,k5_alloc(i,:),~,t_alloc(i,1)] = DecompositionQuantites(N5,A5,b5,C5,eps_vec(i),kmax);
-%     [~,~,k5_pred(i,:),~,t_pred(i,1)] = DecompositionPrediction(N5,A5,b5,C5,eps_vec(i),kmax);
-% end
+for i=1:n
+    [~,~,k5_prix(i,:),~,t_prix(i,1)] = DecompositionPrix(N5,A5,b5,C5,rho,eps_vec(i),kmax);
+    [~,~,k5_alloc(i,:),~,t_alloc(i,1)] = DecompositionQuantites(N5,A5,b5,C5,eps_vec(i),kmax);
+    [~,~,k5_pred(i,:),~,t_pred(i,1)] = DecompositionPrediction(N5,A5,b5,C5,eps_vec(i),kmax);
+end
 
 %plot(eps_vec,k5_prix,eps_vec,k5_alloc,eps_vec,k5_pred)
 
