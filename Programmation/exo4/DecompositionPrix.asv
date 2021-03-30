@@ -23,6 +23,7 @@ function [P_sol,p,k,J] = DecompositionPrix(N,P0,a,b,Pmax,rho,eps,kmax)
         P_prec = P;
         %Décomposition:
         for i = 1:N
+            if option == false 
                 A_sp = a(i);
                 b_sp = -p + 2*a(i)*P0(i);
                 C_in = 1;
@@ -32,12 +33,9 @@ function [P_sol,p,k,J] = DecompositionPrix(N,P0,a,b,Pmax,rho,eps,kmax)
                         'lambda_ini' , lambda(i) , ...
                         'eps', eps_sp, ...
                         'kmax', kmax_sp);
-            if option == false
                 [P(i),lambda(i),mu(i),~] = Uzawa(A_sp,b_sp,0,0,C_in,d_in,param_sp);
             else 
-                f = @(x)  x'*A_sp*x - b_sp'*x;
-                options = optimoptions('fmincon','Display','off');
-                [P(i)] = fmincon(f,P(i),C_in,d_in,[],[],[],[],[],options);
+                f = @(x)  x'*A_sp*x - b_'*x;
             end
         end
         %Coordination:
