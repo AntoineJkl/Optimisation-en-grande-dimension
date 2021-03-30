@@ -1,4 +1,4 @@
-function [P,p,k,J] = DecompositionPrix(N,P0,a,b,Pmax,rho,eps,kmax)
+function [P_sol,p,k,J] = DecompositionPrix(N,P0,a,b,Pmax,rho,eps,kmax)
     tic;
     %Pour ajouter les algorithmes 
     addpath('..\Algorithme');
@@ -8,26 +8,34 @@ function [P,p,k,J] = DecompositionPrix(N,P0,a,b,Pmax,rho,eps,kmax)
     P = zeros(N,1);
     p = 0;
     
+    P_sol = P;
+    
     %Initialisation des sous-problemes:
     rho_sp = 0.3;
-    mu_ini_sp = 0;
-    lambda_ini_sp = 0;
-    eps_sp = 10^(-8);
+    mu = zeros(N,1);
+    lambda = zeros(N,1);
+    eps_sp = 10^(-5);
     kmax_sp = 10000;
     
-    while( k <= 2 || ((norm(P - P_prec,2)/norm(P,2) + norm(p - p_prec,2)/norm(p,2) > eps) && k <= kmax))
+    while( k <= 2 || ((norm(P - P_prec,2) > eps) && k <= kmax))
         P_prec = P;
-        p_prec = p;
         %Décomposition:
         for i = 1:N
             A_sp = a(i);
             b_sp = -p + 2*a(i)*P0(i);
             C_in = 1;
             d_in = Pmax(i);
-            [P(i),~,~,~] = Uzawa(A_sp,b_sp,0,0,C_in,d_in,rho_sp,mu_ini_sp,lambda_ini_sp,eps_sp,kmax_sp);
+            param_sp = struct('rho', rho_sp, ...
+                    'mu_ini' , mu(i) , ...
+                    'lambda_ini' , lambda(i) , ...
+                    'eps', eps_sp, ...
+                    'kmax', kmax_sp);
+            [P(i),lambda(i),mu(i),~] = Uzawa(A_sp,b_sp,0,0,C_in,d_in,param_sp);
         end
         %Coordination:
         p = p + rho*sum(P);
+        
+        P_sol = [P_sol,P];
         
         %Incrementation du nombre d'iterations:
         k = k + 1;
