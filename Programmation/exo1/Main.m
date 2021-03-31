@@ -38,9 +38,9 @@ N1 = 2;
 rho = 0.1;
 eps = 10^(-6);
 kmax = 10000;
-[u1_prix,p1_prix,k1_prix,J1_prix,~] = DecompositionPrix(N1,A1,b1,C1,rho,eps,kmax);
-[u1_alloc,omega1_alloc,k1_alloc,J1_alloc,~] = DecompositionQuantites(N1,A1,b1,C1,eps,kmax);
-[u1_pred,omega1_pred,k1_pred,J1_pred,~] = DecompositionPrediction(N1,A1,b1,C1,eps,kmax);
+[u1_prix,p1_prix,k1_prix,J1_prix,~,~] = DecompositionPrix(N1,A1,b1,C1,rho,eps,kmax,false);
+[u1_alloc,omega1_alloc,k1_alloc,J1_alloc,~,~] = DecompositionQuantites(N1,A1,b1,C1,eps,kmax,false);
+[u1_pred,omega1_pred,k1_pred,J1_pred,~,~] = DecompositionPrediction(N1,A1,b1,C1,eps,kmax,false);
 
 %% Pour N = 3:
 %   Solution: u* = (1;-1;0) et J(u*) = -1
@@ -49,9 +49,9 @@ N2 = 3;
 rho = 0.1;
 eps = 10^(-6);
 kmax = 10000;
-[u2_prix,p2_prix,k2_prix,J2_prix,~] = DecompositionPrix(N2,A2,b2,C2,rho,eps,kmax);
-[u2_alloc,omega2_alloc,k2_alloc,J2_alloc,~] = DecompositionQuantites(N2,A2,b2,C2,eps,kmax);
-[u2_pred,omega2_pred,k2_pred,J2_pred,~] = DecompositionPrediction(N2,A2,b2,C2,eps,kmax);
+[u2_prix,p2_prix,k2_prix,J2_prix,~,~] = DecompositionPrix(N2,A2,b2,C2,rho,eps,kmax,false);
+[u2_alloc,omega2_alloc,k2_alloc,J2_alloc,~,~] = DecompositionQuantites(N2,A2,b2,C2,eps,kmax,false);
+[u2_pred,omega2_pred,k2_pred,J2_pred,~,~] = DecompositionPrediction(N2,A2,b2,C2,eps,kmax,false);
 
 %% Pour N = 4:
 %   Solution: u* = (1;-6/5;3/5;-1) et J(u*) = -19/10
@@ -60,9 +60,9 @@ N3 = 4;
 rho = 0.1;
 eps = 10^(-6);
 kmax = 10000;
-[u3_prix,p3_prix,k3_prix,J3_prix,~] = DecompositionPrix(N3,A3,b3,C3,rho,eps,kmax);
-[u3_alloc,omega3_alloc,k3_alloc,J3_alloc,~] = DecompositionQuantites(N3,A3,b3,C3,eps,kmax);
-[u3_pred,omega3_pred,k3_pred,J3_pred,~] = DecompositionPrediction(N3,A3,b3,C3,eps,kmax);
+[u3_prix,p3_prix,k3_prix,J3_prix,~,~] = DecompositionPrix(N3,A3,b3,C3,rho,eps,kmax,false);
+[u3_alloc,omega3_alloc,k3_alloc,J3_alloc,~,~] = DecompositionQuantites(N3,A3,b3,C3,eps,kmax,false);
+[u3_pred,omega3_pred,k3_pred,J3_pred,~,~] = DecompositionPrediction(N3,A3,b3,C3,eps,kmax,false);
 
 %% Pour N = 5:
 %   Solution: u* = (1;-1.2;0.6;-1;0) et J(u*) = -1.9
@@ -71,44 +71,103 @@ N4 = 5;
 rho = 0.1;
 eps = 10^(-6);
 kmax = 10000;
-[u4_prix,p4_prix,k4_prix,J4_prix,~] = DecompositionPrix(N4,A4,b4,C4,rho,eps,kmax);
-[u4_alloc,omega4_alloc,k4_alloc,J4_alloc,~] = DecompositionQuantites(N4,A4,b4,C4,eps,kmax);
-[u4_pred,omega4_pred,k4_pred,J4_pred,~] = DecompositionPrediction(N4,A4,b4,C4,eps,kmax);
+[u4_prix,p4_prix,k4_prix,J4_prix,~,~] = DecompositionPrix(N4,A4,b4,C4,rho,eps,kmax,false);
+[u4_alloc,omega4_alloc,k4_alloc,J4_alloc,~,~] = DecompositionQuantites(N4,A4,b4,C4,eps,kmax,false);
+[u4_pred,omega4_pred,k4_pred,J4_pred,~,~] = DecompositionPrediction(N4,A4,b4,C4,eps,kmax,false);
 
 %% Question 3
+% On reprend les vavleurs de A4, b4, C4 de l'encadré précédent
+[~,p4_prix,~,~,~,U_prix] = DecompositionPrix(N4,A4,b4,C4,rho,eps,kmax,true);
+[~,omega4_alloc,~,~,~,U_alloc] = DecompositionQuantites(N4,A4,b4,C4,eps,kmax,true);
+[~,omega4_pred,~,~,~,U_pred] = DecompositionPrediction(N4,A4,b4,C4,eps,kmax,true);
 
-Test_prix1 = Test_KKT(A1,b1,C1,0,p1_prix,0,0,0,u1_prix,0.01);
-Test_prix2 = Test_KKT(A2,b2,C2,0,p2_prix,0,0,0,u2_prix,0.01);
-Test_prix3 = Test_KKT(A3,b3,C3,0,p3_prix,0,0,0,u3_prix,0.01);
-Test_prix4 = Test_KKT(A4,b4,C4,0,p4_prix,0,0,0,u4_prix,0.01);
+%Pour tester à l'itération j :
+j = 10;
+disp(['Itération ',num2str(j),' :'])
+disp(['Décomposition par les prix :',mat2str(Test_KKT(A4,b4,C4,0,p4_prix,0,0,0,U_prix(:,min(j,length(U_prix))),0.01))]);
+disp(['Décomposition par les quantités :',mat2str(Test_KKT(A4,b4,C4,0,omega4_alloc,0,0,0,U_alloc(:,min(j,length(U_alloc))),0.01))]);
+disp(['Décomposition par prédiction :',mat2str(Test_KKT(A4,b4,C4,0,omega4_pred,0,0,0,U_pred(:,min(j,length(U_pred))),0.01))]);
+
+
+%On teste aux itérations j = 5,10,20,50,100,500 et 1000 des 3 algorithmes
+
+for j = [5,10,20,50,100,500,1000]
+    disp(['Itération ',num2str(j),' :'])
+    disp(['Décomposition par les prix :',mat2str(Test_KKT(A4,b4,C4,0,p4_prix,0,0,0,U_prix(:,min(j,length(U_prix))),0.01))]);
+    disp(['Décomposition par les quantités :',mat2str(Test_KKT(A4,b4,C4,0,omega4_alloc,0,0,0,U_alloc(:,min(j,length(U_alloc))),0.01))]);
+    disp(['Décomposition par prédiction :',mat2str(Test_KKT(A4,b4,C4,0,omega4_pred,0,0,0,U_pred(:,min(j,length(U_pred))),0.01))]);
+end
+
+%% Question 4
+N4 = 5;
+[A4,b4,C4] = CreateInstance(N4);
+rho = 0.1;
+eps = 10^(-6);
+kmax = 10000;
+[U_meth,t_meth,k_meth,complex_meth]=ComparMethode(N4,A4,b4,C4,rho,eps,kmax);
+
+
+
+
+
+
+
 
 
 %% Question 5
 N5 = 200;
 [A5,b5,C5] = CreateInstance(N5);
-rho = 0.1;
-eps=10^-7;
-kmax = 100000;
-[~,~,k5_prix2,~,t_prix2] = DecompositionPrix(N5,A5,b5,C5,rho,eps,kmax);
-[~,~,k5_alloc2,~,t_alloc2] = DecompositionQuantites(N5,A5,b5,C5,eps,kmax);
-[~,~,k5_pred2,~,t_pred2] = DecompositionPrediction(N5,A5,b5,C5,eps,kmax);
+kmax = 10000;
 
-%%
-eps_vec=10.^-(3:5);
-n=length(eps_vec);
-k5_prix = zeros(N5,1); k5_alloc = zeros(N5,1); k5_pred = zeros(N5,1);
+%% Variation de epsilon
+rho = 0.1;
+n=(6-3+1)*2;
+eps_vec=zeros(n,1);
+eps_vec(1:2:n)=10.^-(3:6);
+eps_vec(2:2:n)=5*10.^-(4:7);
+k5_prix = zeros(n,1); k5_alloc = zeros(n,1); k5_pred = zeros(n,1);
 t_prix = zeros(n,1); t_alloc = zeros(n,1); t_pred = zeros(n,1);
 
 
+for i=1:n
+    [~,~,k5_prix(i),~,t_prix(i),~] = DecompositionPrix(N5,A5,b5,C5,rho,eps_vec(i),kmax,false);
+    [~,~,k5_alloc(i),~,t_alloc(i),~] = DecompositionQuantites(N5,A5,b5,C5,eps_vec(i),kmax,false);
+    [~,~,k5_pred(i),~,t_pred(i),~] = DecompositionPrediction(N5,A5,b5,C5,eps_vec(i),kmax,false);
+end
+
+figure(1)
+semilogx(eps_vec,[k5_prix,k5_alloc,k5_pred])
+legend('Prix','Quantités','Prédiction')
+xlabel('Précision (\epsilon)')
+ylabel('Nombre d itérations (k)')
+
+figure(2)
+semilogx(eps_vec,[t_prix,t_alloc,t_pred])
+legend('Prix','Quantités','Prédiction')
+xlabel('Précision (\epsilon)')
+ylabel('Temps d executon (en s)')
+
+%% Variation de rho
+% eps=10^-4;
+% 
+% n=(6-3+1)*2;
+% rho_vec=zeros(n,1);
+% tho_vec(1:2:n)=10.^-(3:6);
+% rho_vec(2:2:n)=5*10.^-(4:7);
+% k5_prix = zeros(n,1); k5_alloc = zeros(n,1); k5_pred = zeros(n,1);
+% t_prix = zeros(n,1); t_alloc = zeros(n,1); t_pred = zeros(n,1);
+% 
+% 
 % for i=1:n
-%     [~,~,k5_prix(i,:),~,t_prix(i,1)] = DecompositionPrix(N5,A5,b5,C5,rho,eps_vec(i),kmax);
-%     [~,~,k5_alloc(i,:),~,t_alloc(i,1)] = DecompositionQuantites(N5,A5,b5,C5,eps_vec(i),kmax);
-%     [~,~,k5_pred(i,:),~,t_pred(i,1)] = DecompositionPrediction(N5,A5,b5,C5,eps_vec(i),kmax);
+%     [~,~,k5_prix(i),~,t_prix(i),~] = DecompositionPrix(N5,A5,b5,C5,rho_vec(i),eps,kmax);
+%     [~,~,k5_alloc(i),~,t_alloc(i),~] = DecompositionQuantites(N5,A5,b5,C5,eps_vec(i),kmax);
+%     [~,~,k5_pred(i),~,t_pred(i),~] = DecompositionPrediction(N5,A5,b5,C5,eps_vec(i),kmax);
 % end
-
-%plot(eps_vec,k5_prix,eps_vec,k5_alloc,eps_vec,k5_pred)
-
-
+% 
+% semilogx(eps_vec,[k5_prix,k5_alloc,k5_pred])
+% legend('Prix','Quantités','Prédiction')
+% xlabel('Précision (\epsilon)')
+% ylabel('Nombre d itérations (k)')
 
 
 

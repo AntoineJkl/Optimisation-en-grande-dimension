@@ -1,11 +1,11 @@
-function [u,omega,k,J,t2,U_final,KKT_fin] = DecompositionQuantites(N,A,b,C,eps,kmax,bigU,KKT)
+function [u,omega,k,J,t2,U_final,KKT] = DecompositionQuantites(N,A,b,C,eps,kmax,bigU,KKT)
     t1=tic;
     %Pour ajouter les algorithmes (Uzawa et Arrow)
     addpath('..\Algorithme');
 
     %Initialisation generale:
     U_final=[]; %Vecteur des solutions à chaque temps i
-    KKT_fin=[]; %Vecteur pour savoir si à une itération donnée, les sous problèmes respectent KKT
+    KKT=[]; %Vecteur pour savoir si à une itération donnée, les sous problèmes respectent KKT
     k = 1; %Iteration
     u = zeros(N,1); %Solution
     omega = zeros(N,N); %Allocations
@@ -28,7 +28,7 @@ function [u,omega,k,J,t2,U_final,KKT_fin] = DecompositionQuantites(N,A,b,C,eps,k
         
         rho=0.1;
         
-        KKT_sp = zeros(6,N);
+        KKT_sp = zeros(1,n);
         %Décomposition:
         for i = 1:N
             A_sp = 1/2*A(i,i);
@@ -43,11 +43,9 @@ function [u,omega,k,J,t2,U_final,KKT_fin] = DecompositionQuantites(N,A,b,C,eps,k
                     'kmax', kmax_sp);
             [u(i),~,Mu(:,i),~] = Uzawa(A_sp,b_sp,0,0,C_in_sp,d_in,param_sp);
             
-            % Attention, fonctionne pas trop trop
             if KKT
-                KKT_sp(:,i) = Test_KKT(A_sp,b_sp,C_in_sp,d_in,Mu(:,i),0,0,0,u(i),0.01);
+                KKT_sp(i) = Test_KKT(A_sp,b_sp,C_in_sp,d_in,Mu(:,i),0,0,0,u(i));
             end
-            %%%%%
         end
         
         %Coordination:
@@ -65,12 +63,10 @@ function [u,omega,k,J,t2,U_final,KKT_fin] = DecompositionQuantites(N,A,b,C,eps,k
         %Mise à jour des solutions calculées
             U_final=[U_final,u];
         end
-        
-        % Attention, fonctionne pas trop trop
         if KKT
-            KKT_fin = [KKT_fin,prod(KKT_sp,2)];
+            pKKT = prod(KKT_);
+            KKT = [KKT,pKKT];
         end
-        %%%%
     end
     
     %Calcul de la valeur optimale
