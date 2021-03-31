@@ -5,11 +5,13 @@ function [P_sol,omega,k,J] = DecompositionQuantites(N,P0,a,b,Pmax,eps,kmax)
 
     %Initialisation generale:
     k = 1;
-    rho = 0.2;
+    rho = 0.1;
     P = zeros(N,1);
     Lambda = zeros(N,1);
     Mu = zeros(N,1);
-    omega = zeros(N,1);
+    %omega = zeros(N,1);
+    omega = [1/9*ones(9,1);-1/6*ones(6,1)];
+    
     
     P_sol = P;
     
@@ -18,7 +20,6 @@ function [P_sol,omega,k,J] = DecompositionQuantites(N,P0,a,b,Pmax,eps,kmax)
     eps_sp = 10^(-3);
     kmax_sp = 5000;
     
-    option = false;
     
     while( k <= 2 || ( (norm(P - P_prec) > eps) && k <= kmax))
         
@@ -42,19 +43,10 @@ function [P_sol,omega,k,J] = DecompositionQuantites(N,P0,a,b,Pmax,eps,kmax)
                     'lambda_ini' , Lambda(i) , ...
                     'eps', eps_sp, ...
                     'kmax', kmax_sp);
-            
-             if option == false
-                 
-                [P(i),Lambda(i),Mu(i),~] = Uzawa(A_sp,b_sp,C_eq,d_eq,C_in,d_in,param_sp);
-            
+           
+            [P(i),Lambda(i),Mu(i),~] = Uzawa(A_sp,b_sp,C_eq,d_eq,C_in,d_in,param_sp);
             %[P(i),Lambda(i),~,~] = ArrowHurwicz(A_sp,b_sp,C_eq,d_eq,C_in,d_in,rho_sp,rho_sp,mu_ini_sp,lambda_ini_sp,eps_sp,kmax_sp);
             %P(i) = omega(i); Lambda(i) = -2*a(i)*P(i) + 2*a(i)*P0(i);
-             else
-                 
-                 f = @(x)  x'*A_sp*x - b_sp'*x;
-                 options = optimoptions('fmincon','Display','off');
-                 [P(i),~,~,~,multiplicateur] = fmincon(f,P(i),[],[],C_eq,d_eq,[],Pmax(i),[],options);
-                 Lambda(i) =  multiplicateur.eqlin;
                  
              end
         end

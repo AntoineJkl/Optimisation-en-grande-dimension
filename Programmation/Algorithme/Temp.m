@@ -16,7 +16,8 @@ d_in = [1; 1];
 C_eq = [];
 d_eq = [];
 
-[x_sol,optimal_val,~,~,multiplicateur] = fmincon(f,x0,C_in,d_in,C_eq,d_eq);
+options = optimoptions('fmincon','Display','off');
+[x_sol,optimal_val,~,~,multiplicateur] = fmincon(f,x0,C_in,d_in,C_eq,d_eq,[],[],[],options);
 x_exact = [ -7/23; 8/23 ];
 disp('Solution : ');
 disp([x_sol,x_exact]);
@@ -39,10 +40,11 @@ d_in = [];
 C_eq = [1,1,-1,-1;1,-1,1,-1];
 d_eq = [1; 5];
 
-[x_sol,optimal_val,~,~,multiplicateur] = fmincon(f,x0,C_in,d_in,C_eq,d_eq);
+options = optimoptions('fmincon','Display','off');
+[x_sol,optimal_val,~,~,multiplicateur] = fmincon(f,x0,C_in,d_in,C_eq,d_eq,[],[],[],options);
 x_exact = [ 3/2 ; -7/8 ; 9/8 ; -3/2];
 disp('Solution : ');
 disp([x_sol,x_exact]);
-disp('Multiplicateurs (inégalité): ');
+disp('Multiplicateurs (égalité): ');
 disp(multiplicateur.eqlin);
 
