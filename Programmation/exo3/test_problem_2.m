@@ -8,7 +8,7 @@ De = 3/2;
 sol_exacte = [1; 1]/2;
 % Minimize[{4x + 5y, x+y=1,x>=0,y>=0, 2*x^2 + 2*y^2 + 1*x*y <= 3}, {x, y}]
 
-% jouet 2
+% jouet 2 -> matrice symétrique ... pas bcp d'interet
 % N = 2; % nombre d'actions
 % Q = [3/2 0; 0 2];
 % e = [1; 2];
@@ -17,10 +17,10 @@ sol_exacte = [1; 1]/2;
 % Minimize[{- 1x - 2y, x+y = 1, x>=0, y>=0, 3/2*x^2 + 2*y^2 + 0*x*y <= 1}, {x, y}]
 
 % ------------ Résolution du problème
-param = struct('alpha', @(k) .1, ... #convexite auxiliaire
+param = struct('alpha', @(k) 1, ... #convexite auxiliaire
                'eps', @(k) .1, ... #auxiliaire 
                'beta', 10, ...  #actualisation des prix 
-               'kmax', 1000,...
+               'kmax', 10000,...
                'seuil', 1e-6);
 tic
 u = problem_2(Q, e, De, param);

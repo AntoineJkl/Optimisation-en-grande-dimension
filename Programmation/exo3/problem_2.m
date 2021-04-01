@@ -14,14 +14,14 @@ function [ u ] = problem_2(Q, e, De, param)
                          'lambda', 0);
     mu = zeros(N,1);
     
-    kmax = 1000;
+    kmax = param.kmax;
     %----------------------- Variables du problème
     QA = diag(diag(Q));
     QC = Q - QA;
 
     u = ones(N, 1)/N; % solution initiale
     U = zeros(N, kmax);
-    err = @(x, y) norm(x-y, 2)/norm(x, 2); % fonction d'erreur
+    err = @(x, y) norm(x-y, 2); % fonction d'erreur
 
     % décomposition par les prix
     prix = struct('p', [0 0], ...      %prix

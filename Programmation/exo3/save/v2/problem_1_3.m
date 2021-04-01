@@ -1,4 +1,4 @@
-function [ u ] = problem_1(Q, e, Re, param)
+function [ u ] = problem_1_3(Q, e, Re, param)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
     addpath('../Algorithme')
@@ -13,6 +13,7 @@ function [ u ] = problem_1(Q, e, Re, param)
                          'Lambda', 0, ...
                          'Mu', 0);
     mu = zeros(N,1);
+    
     
     kmax = 1000;
     %----------------------- Variables du problème
@@ -37,25 +38,34 @@ function [ u ] = problem_1(Q, e, Re, param)
                  'alpha', param.alpha);
 
     %-----------------------Resolution du problème
-    k = 1;    
+    k = 1;  
+    lambda = zeros(N, 1);
     while (k<=2 || ((err(u, u_prec) + err(prix.p, prix.p_prec))>ppa.seuil && k<ppa.kmax))
         U(:, k) = u;
         prix.p_prec = prix.p;
         u_prec = u;
 
-        ppa.A = ppa.alpha(k) * eye(N)/2 + ppa.eps(k) * QA/2;
-        ppa.b = ppa.alpha(k) * u - ppa.eps(k)*QC*u + ppa.eps(k)*prix.p(1)*e - ppa.eps(k) * prix.p(2) * ones(N, 1);
+        ppa.A = QA; %ppa.alpha(k) * eye(N)/2 + ppa.eps(k) * QA/2;
+        ppa.b = -1/2 * Q * u + QA * u; %ppa.alpha(k) * u - ppa.eps(k)*QC*u ;% + ppa.eps(k)*prix.p(1)*e - ppa.eps(k) * prix.p(2) * ones(N, 1);
 
         % decomposition par les prix
-        
-        for i = 1:N
-            param_Uzawa.Mu = mu(i);
-            [u(i), ~, mu(i)] = Uzawa(ppa.A(i,i), ppa.b(i), 0, 0, -1, 0, param_Uzawa);
-        end
+        it = 1;
+        while (it <= 2 || (err(prix.p, p_prec) + err(lambda, lambda_prec)> 1e-6 && it < 10000))
+            p_prec = prix.p;
+            lambda_prec = lambda;
+            theta = [e'; ones(size(e')); -eye(N)]; %theta i en colonnes
+            v = [Re; 1; zeros(N,1)];
+            
+            for i = 1:N
+                %u(i) = (lambda(i) - ppa.eps(k) * prix.p(1)*e(i) - ppa.eps(k)* prix.p(2) + - ppa.eps(k)* prix.p(3) + ppa.b(i))/(2*ppa.A(i,i));
+                u(i) = (-theta(:,i)'* [prix.p'; lambda] + ppa.b(i))/(2*ppa.A(i,i));
+            end
 
-        prix.p(1) = max(0, prix.p(1) + prix.beta * ppa.eps(k) * (-e'*u + Re));
-        prix.p(2) = prix.p(2) + prix.beta * ppa.eps(k) * (sum(u) - 1);
-        
+            prix.p(1) = max(0, prix.p(1) + prix.beta * ppa.eps(k) * (e'*u - Re));
+            prix.p(2) = prix.p(2) + prix.beta * ppa.eps(k) * (sum(u) - 1);
+            lambda = max(0, lambda + prix.beta * ppa.eps(k) * (-u));
+            it = it + 1;
+        end
         k = k + 1;
     end
     u = U(:, 1:k-1);
