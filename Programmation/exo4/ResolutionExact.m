@@ -6,8 +6,7 @@ function [P,J_opt] = ResolutionExact(N,P0,a,b,Pmax)
 
     f = @(x)  x'*A*x - b_'*x + c;
 
-    %P_in = zeros(N,1);
-    P_in = [8.68; 2; 2; 2; 2; 2; 4.08; 2; 2; -9.98; -7.39; -8.98; -0.1; -0.11; -0.2];
+    P_in = zeros(N,1);
     C_in = [];
     d_in = [];
 

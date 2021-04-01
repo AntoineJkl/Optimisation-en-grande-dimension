@@ -1,54 +1,57 @@
-function [P_sol,omega,k,J] = DecompositionQuantites(N,P0,a,b,Pmax,eps,kmax)    
-    tic;
+function [P_sol,omega,k,J,t] = DecompositionQuantites(N,P0,a,b,Pmax,parametres,parametres_sousproblemes)    
+    start = tic;
     %Pour ajouter les algorithmes 
     addpath('..\Algorithme');
-
+    
     %Initialisation generale:
-    k = 1;
-    rho = 0.1;
-    P = zeros(N,1);
-    Lambda = zeros(N,1);
+    rho = parametres.rho;
+    eps = parametres.eps;
+    kmax = parametres.kmax;
+    
+    %Initialisation des sous-problemes:
+    option = parametres_sousproblemes.choix;
+    rho_sp_uzawa = parametres_sousproblemes.rho_sp_uzawa;
+    rho_sp_arrow1 = parametres_sousproblemes.rho_sp_arrow1;
+    rho_sp_arrow2 = parametres_sousproblemes.rho_sp_arrow2;
+    eps_sp = parametres_sousproblemes.eps_sp;
+    kmax_sp = parametres_sousproblemes.kmax_sp;
     Mu = zeros(N,1);
+    Lambda = zeros(N,1);
+
+    k = 1;    
+    P = zeros(N,1);
+    P_prec = P + 10;
     %omega = zeros(N,1);
     omega = [1/9*ones(9,1);-1/6*ones(6,1)];
     
-    
     P_sol = P;
-    
-    %Initialisation des sous-problemes:
-    rho_sp = 0.005;
-    eps_sp = 10^(-3);
-    kmax_sp = 5000;
-    
-    
+       
     while( k <= 2 || ( (norm(P - P_prec) > eps) && k <= kmax))
-        
-        if mod(k,1) ==  0
-            disp(['Iteration: ',num2str(k)]);
-        end
-        
-        %Precedent:
+
         P_prec = P;
         
         %Décomposition:
         for i = 1:N
-            A_sp = a(i);
-            b_sp = 2*a(i)*P0(i);
-            C_in = 1;
-            d_in = Pmax(i);
-            C_eq = 1;
-            d_eq = omega(i);
-            param_sp = struct('rho', rho_sp, ...
-                    'mu_ini' , Mu(i) , ...
-                    'lambda_ini' , Lambda(i) , ...
-                    'eps', eps_sp, ...
-                    'kmax', kmax_sp);
-           
-            [P(i),Lambda(i),Mu(i),~] = Uzawa(A_sp,b_sp,C_eq,d_eq,C_in,d_in,param_sp);
-            %[P(i),Lambda(i),~,~] = ArrowHurwicz(A_sp,b_sp,C_eq,d_eq,C_in,d_in,rho_sp,rho_sp,mu_ini_sp,lambda_ini_sp,eps_sp,kmax_sp);
-            %P(i) = omega(i); Lambda(i) = -2*a(i)*P(i) + 2*a(i)*P0(i);
-                 
-             end
+            %Données des sous-problèmes:
+            A_sp = a(i); b_sp = 2*a(i)*P0(i); C_in = 1; d_in = Pmax(i); C_eq = 1; d_eq = omega(i);
+            if option == 1
+                %Resolution par Uzawa:
+                param_sp_uzawa = struct('rho', rho_sp_uzawa, ...
+                        'mu_ini' , Mu(i) , ...
+                        'lambda_ini' , Lambda(i) , ...
+                        'eps', eps_sp, ...
+                        'kmax', kmax_sp);
+                [P(i),Lambda(i),Mu(i),~] = Uzawa(A_sp,b_sp,C_eq,d_eq,C_in,d_in,param_sp_uzawa);
+            else 
+                %Resolution par Arrow:
+                param_sp_arrow = struct('rho1', rho_sp_arrow1, ...
+                        'rho2',rho_sp_arrow2,...
+                        'mu_ini' , Mu(i) , ...
+                        'lambda_ini' , Lambda(i) , ...
+                        'eps', eps_sp, ...
+                        'kmax', kmax_sp);
+                [P(i),Lambda(i),Mu(i),~] = ArrowHurwicz(A_sp,b_sp,C_eq,d_eq,C_in,d_in,param_sp_arrow);
+            end    
         end
         
         %Coordination:
@@ -64,6 +67,6 @@ function [P_sol,omega,k,J] = DecompositionQuantites(N,P0,a,b,Pmax,eps,kmax)
     %Calcul de la valeur objectif optimale:
     J = sum(a.*(P-P0).^2 + b);
     
-    toc;
+    t = toc(start);
 end
 

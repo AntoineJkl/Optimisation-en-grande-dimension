@@ -27,5 +27,6 @@ function [U,Lambda,Mu,k] = ArrowHurwicz(A,b,C_eq,d_eq,C_in,d_in,param)
         %Incrementation du nombre d'iterations
         k = k + 1;
     end
+    
 end
 
