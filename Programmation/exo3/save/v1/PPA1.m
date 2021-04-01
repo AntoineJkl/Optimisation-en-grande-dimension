@@ -14,10 +14,11 @@ e = [5/4; 3];
 Re = 3/2;
 
 
-% N = 3; % nombre d'actions
-% Q = [3 1 0; 1 5 1; 0 1 2];
-% e = [1; 2; 3];
-% Re = 3;
+N = 3; % nombre d'actions
+Q = [3 1 0; 1 5 1; 0 1 2];
+e = [1; 2; 3];
+Re = 3;
+
 %----------------------- Variables du problème
 % décomposition de l'objectif
 QA = diag(diag(Q)); %partie additive

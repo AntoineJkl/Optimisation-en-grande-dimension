@@ -1,9 +1,10 @@
-function [u,p,k,J] = DecompositionPrix(N,A,b,C,rho,eps,kmax)
-    tic;
+function [u,p,k,J,t2,U_final] = DecompositionPrix(N,A,b,C,rho,eps,kmax,bigU)
+    t1=tic;
     %Pour ajouter les algorithmes (Uzawa et Arrow)
     addpath('..\Algorithme');
 
     %Initialisation generale:
+    U_final=[]; %Vecteur des solutions à chaque temps i
     k = 1; %Iteration
     u = zeros(N,1); %Solution
     p = zeros(N,1); %Prix
@@ -20,18 +21,28 @@ function [u,p,k,J] = DecompositionPrix(N,A,b,C,rho,eps,kmax)
         for i = 1:N
             A_sp = 1/2*A(i,i);
             b_sp = b(i)-C(:,i)'*p;
-            [u(i),~,~,~] = Uzawa(A_sp,b_sp,0,0,0,0,rho_sp,0,0,eps_sp,kmax_sp);
+            param_sp = struct('rho', rho_sp, ...
+                    'mu_ini' , 0 , ...
+                    'lambda_ini' , 0 , ...
+                    'eps', eps_sp, ...
+                    'kmax', kmax_sp);
+            [u(i),~,~,~] = Uzawa(A_sp,b_sp,0,0,0,0,param_sp);
         end
         %Coordination:
         p = max(0,p + rho*C*u);
         
         %Incrementation du nombre d'iterations:
         k = k + 1;
+        
+        if bigU
+        %Mise à jour des solutions calculées
+            U_final=[U_final,u];
+        end
     end
     
     %Calcul de la valeur optimale
     J = 1/2*u'*A*u - b'*u;
     
-    toc;
+    t2=toc(t1);
 end
 

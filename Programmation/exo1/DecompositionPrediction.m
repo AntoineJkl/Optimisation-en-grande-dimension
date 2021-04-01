@@ -1,9 +1,10 @@
-function [u,p,k,J] = DecompositionPrediction(N,A,b,C,eps,kmax)
-    tic;
+function [u,p,k,J,t2,U_final] = DecompositionPrediction(N,A,b,C,eps,kmax,bigU)
+    t1=tic;
     %Pour ajouter les algorithmes (Uzawa et Arrow)
     addpath('..\Algorithme');
 
     %Initialisation generale:
+    U_final=[]; %Vecteur des solutions à chaque temps i
     k = 1; %Iteration
     u = zeros(N,1); %Solution
     v = zeros(N,1); %Second membre
@@ -18,6 +19,7 @@ function [u,p,k,J] = DecompositionPrediction(N,A,b,C,eps,kmax)
     rho_sp = 0.2;
     eps_sp = 10^(-8);
     kmax_sp = 10000;
+    Mu = zeros(N,1);
     
     while( k <= 2 || ((norm(u - u_prec,2)/norm(u,2) > eps) && k <= kmax))
         u_prec = u;
@@ -25,10 +27,15 @@ function [u,p,k,J] = DecompositionPrediction(N,A,b,C,eps,kmax)
         %Resolution du sous-probleme i0:
         A_sp = 1/2*A(i0,i0);
         b_sp = b(i0);
-        mu_ini_sp = zeros(N,1);
+        mu_ini_sp = Mu;
         C_in = C(:,i0);
         d_in = v;
-        [u(i0),~,Mu,~] = Uzawa(A_sp,b_sp,0,0,C_in,d_in,rho_sp,mu_ini_sp,0,eps_sp,kmax_sp);
+        param_0 = struct('rho', rho_sp, ...
+                    'mu_ini' , mu_ini_sp , ...
+                    'lambda_ini' , 0 , ...
+                    'eps', eps_sp, ...
+                    'kmax', kmax_sp);
+        [u(i0),~,Mu,~] = Uzawa(A_sp,b_sp,0,0,C_in,d_in,param_0);
         
         %Calcul du prix:
         p = (1-beta)*p + beta*Mu;
@@ -38,7 +45,12 @@ function [u,p,k,J] = DecompositionPrediction(N,A,b,C,eps,kmax)
             if i ~= i0
                 A_sp = 1/2*A(i,i);
                 b_sp = b(i) - C(:,i)'*p;
-                [u(i),~,~,~] = Uzawa(A_sp,b_sp,0,0,0,0,rho_sp,0,0,eps_sp,kmax_sp);
+                param_sp = struct('rho', rho_sp, ...
+                    'mu_ini' , 0 , ...
+                    'lambda_ini' , 0 , ...
+                    'eps', eps_sp, ...
+                    'kmax', kmax_sp);
+                [u(i),~,~,~] = Uzawa(A_sp,b_sp,0,0,0,0,param_sp);
             end
         end
         
@@ -47,11 +59,16 @@ function [u,p,k,J] = DecompositionPrediction(N,A,b,C,eps,kmax)
         
         %Incrementation du nombre d'iterations:
         k = k + 1;
+        
+        if bigU
+        %Mise à jour des solutions calculées
+            U_final=[U_final,u];
+        end
     end
     
     %Calcul de la valeur optimale
     J = 1/2*u'*A*u - b'*u;
     
-    toc;
+    t2=toc(t1);
 end
 
