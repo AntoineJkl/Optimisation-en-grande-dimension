@@ -5,8 +5,8 @@ clc;
 Donnees_SmartGrids_Scenario1;
 
 %Initialisation du problème général:
-rho = 0.1;
-eps = 10^(-5);
+rho = 0.2;
+eps = 10^(-3);
 kmax = 10000;
 
 parametres = struct('rho', rho, ...
@@ -15,7 +15,7 @@ parametres = struct('rho', rho, ...
 
 %Initialisation des sous-problèmes:
 choix = 1; %1 = Uzawa, 0 = Arrow
-rho_sp_uzawa = 0.1;
+rho_sp_uzawa = 0.5;
 rho_sp_arrow1 = 0.001;
 rho_sp_arrow2 = 0.001;
 eps_sp = 10^(-4);
@@ -252,6 +252,3 @@ disp(['- Hopital: ',num2str(P_final(15)),' MW']);
 
 %Affichage des solutions:
 AffichageSolution(P,P_exact);
-
-
-

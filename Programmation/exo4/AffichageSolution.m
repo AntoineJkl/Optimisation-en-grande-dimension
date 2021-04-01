@@ -64,7 +64,7 @@ function [] = AffichageSolution(P_tab,P_exact)
     plots_tab(15) = plot(Iterations,P_tab(15,:),'LineStyle','-','Color',[255 4 203]/255);
     hold on;
     exact = plot(Iterations,P_exact(15)*ones(size(Iterations)),'LineStyle',':','Color','k');
-    hold on;
+    hold off;
     
     %Affichage:
     legend([plots_tab([1,2,7,8,10,11,12,13,15]),exact],{'Centrale à charbon','Eolienne','Barrage','Panneau photovoltaique','DataCenter','Logement','Usine','Tramway','Hopital','Solution exacte'},'Location','eastOutside');
