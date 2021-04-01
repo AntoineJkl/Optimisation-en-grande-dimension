@@ -27,6 +27,13 @@ xlabel('u1');
 ylabel('u2');
 legend('u1 + 2u2 = 0','u2 = 0');
 
+
+
+
+
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question 2
 
 %Test des decomposition par les prix, par les quantites et par prediction sur les exemples jouets:
@@ -71,12 +78,13 @@ N4 = 5;
 rho = 0.1;
 eps = 10^(-6);
 kmax = 10000;
+
 [u4_prix,p4_prix,k4_prix,J4_prix,~,~] = DecompositionPrix(N4,A4,b4,C4,rho,eps,kmax,false);
 [u4_alloc,omega4_alloc,k4_alloc,J4_alloc,~,~] = DecompositionQuantites(N4,A4,b4,C4,eps,kmax,false);
 [u4_pred,omega4_pred,k4_pred,J4_pred,~,~] = DecompositionPrediction(N4,A4,b4,C4,eps,kmax,false);
 
 %% Question 3
-% On reprend les vavleurs de A4, b4, C4 de l'encadré précédent
+% On reprend les valeurs de A4, b4, C4 de l'encadré précédent
 [~,p4_prix,~,~,~,U_prix] = DecompositionPrix(N4,A4,b4,C4,rho,eps,kmax,true);
 [~,omega4_alloc,~,~,~,U_alloc] = DecompositionQuantites(N4,A4,b4,C4,eps,kmax,true);
 [~,omega4_pred,~,~,~,U_pred] = DecompositionPrediction(N4,A4,b4,C4,eps,kmax,true);
@@ -98,13 +106,22 @@ for j = [5,10,20,50,100,500,1000]
     disp(['Décomposition par prédiction :',mat2str(Test_KKT(A4,b4,C4,0,omega4_pred,0,0,0,U_pred(:,min(j,length(U_pred))),0.01))]);
 end
 
+
+
+
+
+
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question 4
 N4 = 5;
 [A4,b4,C4] = CreateInstance(N4);
 rho = 0.1;
 eps = 10^(-6);
 kmax = 10000;
-[U_meth,t_meth,k_meth,complex_meth]=ComparMethode(N4,A4,b4,C4,rho,eps,kmax);
+%%
+ComparMethode(N4,A4,b4,C4,rho,eps,kmax)
 
 
 
@@ -112,26 +129,27 @@ kmax = 10000;
 
 
 
-
-
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question 5
 N5 = 200;
 [A5,b5,C5] = CreateInstance(N5);
 kmax = 10000;
 
 %% Variation de epsilon
+%%%%  Attention /!\ long à l'execution %%%%
 rho = 0.1;
-n=(6-3+1)*2;
+n=(6-2+1)*2;
 eps_vec=zeros(n,1);
-eps_vec(1:2:n)=10.^-(3:6);
-eps_vec(2:2:n)=5*10.^-(4:7);
+eps_vec(1:2:n)=10.^-(2:6);
+eps_vec(2:2:n)=5*10.^-(3:7);
 k5_prix = zeros(n,1); k5_alloc = zeros(n,1); k5_pred = zeros(n,1);
 t_prix = zeros(n,1); t_alloc = zeros(n,1); t_pred = zeros(n,1);
 
 
 for i=1:n
     [~,~,k5_prix(i),~,t_prix(i),~] = DecompositionPrix(N5,A5,b5,C5,rho,eps_vec(i),kmax,false);
-    [~,~,k5_alloc(i),~,t_alloc(i),~] = DecompositionQuantites(N5,A5,b5,C5,eps_vec(i),kmax,false);
+    [~,~,k5_alloc(i),~,t_alloc(i),~,~] = DecompositionQuantites(N5,A5,b5,C5,rho,eps_vec(i),kmax,false,false);
     [~,~,k5_pred(i),~,t_pred(i),~] = DecompositionPrediction(N5,A5,b5,C5,eps_vec(i),kmax,false);
 end
 
@@ -148,30 +166,35 @@ xlabel('Précision (\epsilon)')
 ylabel('Temps d executon (en s)')
 
 %% Variation de rho
-% eps=10^-4;
-% 
-% n=(6-3+1)*2;
-% rho_vec=zeros(n,1);
-% tho_vec(1:2:n)=10.^-(3:6);
-% rho_vec(2:2:n)=5*10.^-(4:7);
-% k5_prix = zeros(n,1); k5_alloc = zeros(n,1); k5_pred = zeros(n,1);
-% t_prix = zeros(n,1); t_alloc = zeros(n,1); t_pred = zeros(n,1);
-% 
-% 
-% for i=1:n
-%     [~,~,k5_prix(i),~,t_prix(i),~] = DecompositionPrix(N5,A5,b5,C5,rho_vec(i),eps,kmax);
-%     [~,~,k5_alloc(i),~,t_alloc(i),~] = DecompositionQuantites(N5,A5,b5,C5,eps_vec(i),kmax);
-%     [~,~,k5_pred(i),~,t_pred(i),~] = DecompositionPrediction(N5,A5,b5,C5,eps_vec(i),kmax);
-% end
-% 
-% semilogx(eps_vec,[k5_prix,k5_alloc,k5_pred])
-% legend('Prix','Quantités','Prédiction')
-% xlabel('Précision (\epsilon)')
-% ylabel('Nombre d itérations (k)')
+%%%%  Attention /!\ long à l'execution %%%%
+eps=10^-4;
+
+rho_vec = 0.05:0.05:0.35;
+n=length(rho_vec);
+k5_prix = zeros(n,1); k5_alloc = zeros(n,1); %k5_pred = zeros(n,1);
+t_prix = zeros(n,1); t_alloc = zeros(n,1); %t_pred = zeros(n,1);
 
 
+for i=1:n
+    [~,~,k5_prix(i),~,t_prix(i),~] = DecompositionPrix(N5,A5,b5,C5,rho_vec(i),eps,kmax,false);
+    [~,~,k5_alloc(i),~,t_alloc(i),~,~] = DecompositionQuantites(N5,A5,b5,C5,rho_vec(i),eps,kmax,false,false);
+    %[~,~,k5_pred(i),~,t_pred(i),~] = DecompositionPrediction(N5,A5,b5,C5,eps_vec(i),kmax,false);
+end
 
+figure(1)
+plot(rho_vec,[k5_prix,k5_alloc])
+legend('Prix','Quantités')
+xlabel('Pas (\rho)')
+ylabel('Nombre d itérations (k)')
 
+figure(2)
+plot(rho_vec,[t_prix,t_alloc])
+legend('Prix','Quantités')
+xlabel('Pas (\rho)')
+ylabel('Temps d executon (en s)')
+
+%%
+%reste à tester de faire varier les paramètres alpha/bêta pour prédiction
 
 
 

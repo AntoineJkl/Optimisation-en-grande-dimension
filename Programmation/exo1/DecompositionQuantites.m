@@ -1,4 +1,4 @@
-function [u,omega,k,J,t2,U_final,KKT_fin] = DecompositionQuantites(N,A,b,C,eps,kmax,bigU,KKT)
+function [u,omega,k,J,t2,U_final,KKT_fin] = DecompositionQuantites(N,A,b,C,rho,eps,kmax,bigU,KKT)
     t1=tic;
     %Pour ajouter les algorithmes (Uzawa et Arrow)
     addpath('..\Algorithme');
@@ -25,8 +25,6 @@ function [u,omega,k,J,t2,U_final,KKT_fin] = DecompositionQuantites(N,A,b,C,eps,k
         
         u_prec = u;
         omega_prec = omega;
-        
-        rho=0.1;
         
         KKT_sp = zeros(6,N);
         %Décomposition:
