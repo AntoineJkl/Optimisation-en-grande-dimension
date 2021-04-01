@@ -1,4 +1,4 @@
-function [u,v,w,p,k,J] = DecompositionPredictionPar(N,A,C,eps,kmax)
+function [u,v,w,p,k,J,u_stock] = DecompositionPredictionPar(N,A,C,param)
     %N : taille de l'instance du problème
     %A : matrice de la fonction objective de taille (N+1,2,2)
     %C : matrice de contraintes associée aux sous-problèmes de taille (N,2)
@@ -8,8 +8,13 @@ function [u,v,w,p,k,J] = DecompositionPredictionPar(N,A,C,eps,kmax)
     
     tic;
        
-    %Pour ajouter les algorithmes (Uzawa et Arrow)
+    %Pour ajouter l'algorithme d'Arrow)
     addpath('..\Algorithme');
+    
+    %Paramètres de la decomposition par prediction
+    if ismember('eps',fieldnames(param)) ; eps=param.eps ; else eps=10^(-3) ; end
+    if ismember('kmax',fieldnames(param)) ; kmax=param.kmax ; else kmax=100 ; end
+    if ismember('algo',fieldnames(param)) ; algo=param.algo ; else algo='fmincon' ; end
     
     %Initialisation generale:
     k = 1; %Iteration
@@ -17,26 +22,30 @@ function [u,v,w,p,k,J] = DecompositionPredictionPar(N,A,C,eps,kmax)
     v = zeros(N,2);   %Solution v
     p = zeros(1,2); %Prix
     w = zeros(1,2); % Allocation
+    lambda_ini= zeros(N,1);
+    mu_ini = zeros(N,5,1);
+    u_stock=zeros(kmax+2,N+1,2);
+    u_stock(1,:,:)=u;
     
-    %Initialisation des hyperparamètres de Uzawa ou Arrow:
-    rho_sp1 = 0.1;
-    rho_sp2 = 0.5;
-    eps_sp = 10^(-10);
-    kmax_sp = 50000;
+    %Initialisation des hyperparamètres d'Arrow:
+    if ismember('rho_sp1',fieldnames(param)) ; rho_sp1=param.rho_sp1 ; else rho_sp1=0.1 ; end
+    if ismember('rho_sp2',fieldnames(param)) ; rho_sp2=param.rho_sp2 ; else rho_sp2=4 ; end
+    if ismember('eps_sp',fieldnames(param)) ; eps_sp=param.eps_sp ; else eps_sp=10^(-10) ; end
+    if ismember('kmax_sp',fieldnames(param)) ; kmax_sp=param.kmax_sp ; else kmax_sp=50000 ; end
     
     %Initialisation paramètre coordination
-    beta =0.5 ;
-    gamma =0.5 ;
+    if ismember('beta',fieldnames(param)) ; beta=param.beta ; else beta=0.5 ; end
+    if ismember('gamma',fieldnames(param)) ; gamma=param.gamma ; else gamma=0.5 ; end
     
-    while( k <= 2 || ((norm(u - u_prec,2)/norm(u,2) + norm(p - p_prec,2)/norm(p,2) + norm(w - w_prec,2)/norm(p,2) + norm(v - v_prec,2)/norm(v,2) > eps) && k <= kmax))
+    while( k <= 2 || ((norm(u - u_prec,2) > eps) && k <= kmax))
         
         %Initialisation de la valeur optimale
         J=0;
         
         u_prec = u;
-        v_prec = v;
         p_prec = p;
         w_prec = w;
+        v_prec=v;
         
         %Décomposition des N premiers sous-problèmes :
         for i = 1:N
@@ -46,22 +55,43 @@ function [u,v,w,p,k,J] = DecompositionPredictionPar(N,A,C,eps,kmax)
             b_sp = zeros(4,1); %u1,u2,v1,v2
             b_sp(1:2,1)=-p;
             
+            %Contraintes d'ingéalite
             C_in=[1 0 0 0 ; -1 0 0 0 ; 0 1 0 0 ; 0 -1 0 0 ; -1 0 -1 0];
             d_in=[C(i,1) ; 0 ; C(i,2)-C(i,1) ; 0 ; -C(i,1)];
             
+            %Contrainte d'égalité
             C_eq=ones(1,4);
             d_eq=C(i,2);
             
-            mu_ini=zeros(5,1);
-            lambda_ini=0;
+            u_ini = [u(i,:)  v(i,:)]';
             
-            [temp,~,~,~] = ArrowHurwicz(A_sp,b_sp,C_eq,d_eq,C_in,d_in,rho_sp1,rho_sp2,mu_ini,lambda_ini,eps_sp,kmax_sp);
-            u(i,:)=temp(1:2);
-            v(i,:)=temp(3:4);
+            if strcmp(algo,'arrow')
+                %Résolution par Arrow-Hurwicz
+                param_sp = struct('rho1', rho_sp1, ...
+                        'rho2', rho_sp2, ...
+                        'mu_ini' , mu_ini(i,:,:)' , ...
+                        'lambda_ini' , lambda_ini(i,:) , ...
+                        'eps', eps_sp, ...
+                        'kmax', kmax_sp, ...
+                        'U_ini' , u_ini);  
+
+                [temp,lambda_ini(i,:),mu_ini(i,:,:),~] = ArrowHurwicz(A_sp,b_sp,C_eq,d_eq,C_in,d_in,param_sp);
+                u(i,:)=temp(1:2);
+                v(i,:)=temp(3:4);
+            else
+                %Résolution par la méthode du point intérieur
+                fun = @(var) Juv(var,A_sp,b_sp);
+                options = optimoptions('fmincon','Display', 'off','GradObj','on');
+                ub=[] ; lb=[] ; noncol= [] ; 
+                temp = fmincon(fun,u_ini,C_in,d_in,C_eq,d_eq,lb,ub,noncol,options);
+                u(i,:)=temp(1:2);
+                v(i,:)=temp(3:4);
+            end
             
             %Incrementation de la valeur objective J pour les N premiers
             %sous-problèmes
-            J=J+temp'*A_sp*temp;
+            val=[u_prec(i,:) v_prec(i,:)]';
+            J=J+val'*A_sp*val;
             
         end
         
@@ -74,14 +104,26 @@ function [u,v,w,p,k,J] = DecompositionPredictionPar(N,A,C,eps,kmax)
         A_sp=zeros(2,2);
         A_sp(1,1)=A(N+1,1,1) ; A_sp(2,2)=A(N+1,2,2);
         J=J+(1/2)*(u(N+1,:)*A_sp*u(N+1,:)');
+
         
         %Coordination:
-        p = (1-beta).*p_prec +beta.*p;
-        w = (1-gamma)*w_prec -gamma*sum(u(1:N,:),1);
+        if k==1
+            w = -gamma*sum(u(1:N,:),1);
+        else
+            p = (1-beta).*p_prec +beta.*p;
+            w = (1-gamma)*w_prec -gamma*sum(u(1:N,:),1);
+        end
+
         
         %Incrementation du nombre d'iterations:
         k = k + 1;
+        u_stock(k,:,:)=u;
     end
+    
+    %Récupération des valeurs précédentes pour respecter la contrainte
+    %couplante
+    u(1:N,:)=u_prec(1:N,:);
+    v(1:N,:)=v_prec(1:N,:);
 
     toc;
 

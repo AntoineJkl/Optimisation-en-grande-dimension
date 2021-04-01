@@ -1,4 +1,4 @@
-function [u,v,p,k,J] = DecompositionPrix_par(N,A,C,rho,eps,kmax)
+function [u,v,p,k,J,u_stock] = DecompositionPrix_par(N,A,C,param)
     %N : taille de l'instance du problème
     %A : matrice de la fonction objective de taille (N+1,2,2)
     %C : matrice de contraintes associée aux sous-problèmes de taille (N,2)
@@ -6,32 +6,39 @@ function [u,v,p,k,J] = DecompositionPrix_par(N,A,C,rho,eps,kmax)
     %eps : précision de la décomposition par les prix
     %kmax : nombre d'itérations max
     
-    tic;
-       
-    %Pour ajouter les algorithmes (Uzawa et Arrow)
+    
+    %Pour ajouter l'algorithme d'Arrow
     addpath('..\Algorithme');
     
+    %Paramètres de la decomposition par prix
+    if ismember('rho',fieldnames(param)) ; rho=param.rho ; else rho=1 ; end
+    if ismember('eps',fieldnames(param)) ; eps=param.eps ; else eps=10^(-3) ; end
+    if ismember('kmax',fieldnames(param)) ; kmax=param.kmax ; else kmax=100 ; end
+    if ismember('algo',fieldnames(param)) ; algo=param.algo ; else algo='fmincon' ; end
+    
     %Initialisation generale:
-    k = 1; %Iteration
+    k = 1;            %Iteration
     u = zeros(N+1,2); %Solution u
     v = zeros(N,2);   %Solution v
-    p = zeros(1,2); %Prix
+    p = zeros(1,2);   %Prix
+    u_stock=zeros(kmax+2,N+1,2);
+    u_stock(1,:,:)=u;
     
-    %Initialisation des hyperparamètres de Uzawa ou Arrow:
-    rho_sp1 = 0.1;
-    rho_sp2 = 0.5;
-    eps_sp = 10^(-10);
-    kmax_sp = 50000;
+    %Initialisation des hyperparamètres d Arrow:
+    if ismember('rho_sp1',fieldnames(param)) ; rho_sp1=param.rho_sp1 ; else rho_sp1=0.1 ; end
+    if ismember('rho_sp2',fieldnames(param)) ; rho_sp2=param.rho_sp2 ; else rho_sp2=2 ; end
+    if ismember('eps_sp',fieldnames(param)) ; eps_sp=param.eps_sp ; else eps_sp=10^(-10) ; end
+    if ismember('kmax_sp',fieldnames(param)) ; kmax_sp=param.kmax_sp ; else kmax_sp=50000 ; end
+    lambda_ini= zeros(N,1);
+    mu_ini = zeros(N,5,1);
     
-    while( k <= 2 || ((norm(u - u_prec,2)/norm(u,2) + norm(p - p_prec,2)/norm(p,2) + norm(v - v_prec,2)/norm(v,2) > eps) && k <= kmax))
-        
+    tic;
+    
+    while( k <= 2 || ((norm(u - u_prec,2) > eps) && k <= kmax))
         %Initialisation de la valeur optimale
         J=0;
-        
         u_prec = u;
-        v_prec = v;
-        p_prec = p;
-        
+    
         %Décomposition des N premiers sous-problèmes :
         parfor i = 1:N
             A_sp = zeros(4,4) ; %u1,u2,v1,v2
@@ -40,18 +47,42 @@ function [u,v,p,k,J] = DecompositionPrix_par(N,A,C,rho,eps,kmax)
             b_sp = zeros(4,1); %u1,u2,v1,v2
             b_sp(1:2,1)=-p;
             
+            %Contrainte d inegalite
             C_in=[1 0 0 0 ; -1 0 0 0 ; 0 1 0 0 ; 0 -1 0 0 ; -1 0 -1 0];
             d_in=[C(i,1) ; 0 ; C(i,2)-C(i,1) ; 0 ; -C(i,1)];
             
+            %Contrainte d inegalite
             C_eq=ones(1,4);
             d_eq=C(i,2);
             
-            mu_ini=zeros(5,1);
-            lambda_ini=0;
+            u_ini = [u(i,:)  v(i,:)]';
             
-            [temp,~,~,~] = ArrowHurwicz(A_sp,b_sp,C_eq,d_eq,C_in,d_in,rho_sp1,rho_sp2,mu_ini,lambda_ini,eps_sp,kmax_sp);
-            u(i,:)=temp(1:2);
-            v(i,:)=temp(3:4);
+            if strcmp(algo,'arrow')
+                %Resolution par Arrow-Hurwicz
+                param_sp = struct('rho1', rho_sp1, ...
+                        'rho2', rho_sp2, ...
+                        'mu_ini' , mu_ini(i,:,:)' , ...
+                        'lambda_ini' , lambda_ini(i,:) , ...
+                        'eps', eps_sp, ...
+                        'kmax', kmax_sp, ...
+                        'U_ini' , u_ini);           
+
+                [temp,lambda_ini(i,:),mu_ini(i,:,:),~] = ArrowHurwicz(A_sp,b_sp,C_eq,d_eq,C_in,d_in,param_sp);
+                u(i,:)=temp(1:2);
+                v(i,:)=temp(3:4); 
+                
+            else
+                %Resolution par la méthode du point intérieur
+                fun = @(var) Juv(var,A_sp,b_sp);
+                options = optimoptions('fmincon','Display', 'off','GradObj','on');
+                ub=[] ; lb=[] ; noncol= [] ; 
+                temp = fmincon(fun,u_ini,C_in,d_in,C_eq,d_eq,lb,ub,noncol,options);
+                u(i,:)=temp(1:2);
+                v(i,:)=temp(3:4);
+                
+            end
+            
+
             
             %Incrementation de la valeur objective J pour les N premiers
             %sous-problèmes
@@ -74,6 +105,7 @@ function [u,v,p,k,J] = DecompositionPrix_par(N,A,C,rho,eps,kmax)
         
         %Incrementation du nombre d'iterations:
         k = k + 1;
+        u_stock(k,:,:)=u;
     end
 
     toc;
