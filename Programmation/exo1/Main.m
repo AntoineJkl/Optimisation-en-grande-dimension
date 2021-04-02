@@ -83,6 +83,13 @@ kmax = 10000;
 [u4_alloc,omega4_alloc,k4_alloc,J4_alloc,~,~] = DecompositionQuantites(N4,A4,b4,C4,eps,kmax,false);
 [u4_pred,omega4_pred,k4_pred,J4_pred,~,~] = DecompositionPrediction(N4,A4,b4,C4,eps,kmax,false);
 
+
+
+
+
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question 3
 % On reprend les valeurs de A4, b4, C4 de l'encadré précédent
 [~,p4_prix,~,~,~,U_prix] = DecompositionPrix(N4,A4,b4,C4,rho,eps,kmax,true);
@@ -115,13 +122,17 @@ end
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question 4
-N4 = 5;
-[A4,b4,C4] = CreateInstance(N4);
 rho = 0.1;
 eps = 10^(-6);
 kmax = 10000;
+
 %%
-ComparMethode(N4,A4,b4,C4,rho,eps,kmax)
+plotNpetit = 0; %Si on veut visualiser la recherche de solution pour les 3 algos pour un petit exemple (N=5)
+plotNbIt = 1; %Si on veut visualiser l'évolution du nombre d'itérations pour chaque algo pour N de 5 à 50
+plotTmpsEx = 1; %Si on veut visualiser l'évolution du temps d'execution pour chaque algo pour N de 5 à 50
+plotComplex = 1; %Si on veut visualiser l'erreur des algorithmes pour chaque algo pour N de 5 à 50
+
+ComparMethode(rho,eps,kmax,plotNpetit,plotNbIt,plotTmpsEx,plotComplex)
 
 
 
@@ -149,7 +160,7 @@ t_prix = zeros(n,1); t_alloc = zeros(n,1); t_pred = zeros(n,1);
 
 for i=1:n
     [~,~,k5_prix(i),~,t_prix(i),~] = DecompositionPrix(N5,A5,b5,C5,rho,eps_vec(i),kmax,false);
-    [~,~,k5_alloc(i),~,t_alloc(i),~,~] = DecompositionQuantites(N5,A5,b5,C5,rho,eps_vec(i),kmax,false,false);
+    [~,~,k5_alloc(i),~,t_alloc(i),~] = DecompositionQuantites(N5,A5,b5,C5,rho,eps_vec(i),kmax,false);
     [~,~,k5_pred(i),~,t_pred(i),~] = DecompositionPrediction(N5,A5,b5,C5,eps_vec(i),kmax,false);
 end
 
@@ -177,7 +188,7 @@ t_prix = zeros(n,1); t_alloc = zeros(n,1); %t_pred = zeros(n,1);
 
 for i=1:n
     [~,~,k5_prix(i),~,t_prix(i),~] = DecompositionPrix(N5,A5,b5,C5,rho_vec(i),eps,kmax,false);
-    [~,~,k5_alloc(i),~,t_alloc(i),~,~] = DecompositionQuantites(N5,A5,b5,C5,rho_vec(i),eps,kmax,false,false);
+    [~,~,k5_alloc(i),~,t_alloc(i),~] = DecompositionQuantites(N5,A5,b5,C5,rho_vec(i),eps,kmax,false);
     %[~,~,k5_pred(i),~,t_pred(i),~] = DecompositionPrediction(N5,A5,b5,C5,eps_vec(i),kmax,false);
 end
 
