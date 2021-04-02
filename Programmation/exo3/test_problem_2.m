@@ -1,11 +1,11 @@
 clear 
 %----------------------- Données
 % jouet 1
-N = 2; % nombre d'actions
-Q = [2 1; 1 2];
-e = [4; 5];
-De = 3/2;
-sol_exacte = [1; 1]/2;
+% N = 2; % nombre d'actions
+% Q = [2 1; 1 2];
+% e = [4; 5];
+% De = 3/2;
+% sol_exacte = [1; 1]/2;
 % Minimize[{4x + 5y, x+y=1,x>=0,y>=0, 2*x^2 + 2*y^2 + 1*x*y <= 3}, {x, y}]
 
 % jouet 2 -> matrice symétrique ... pas bcp d'interet
@@ -23,7 +23,9 @@ param = struct('alpha', @(k) 1, ... #convexite auxiliaire
                'kmax', 10000,...
                'seuil', 1e-6);
 tic
-u = problem_2(Q, e, De, param);
+%u = problem_2(Q, e, De, param);
+x0 = ones(N,1)/N;
+[x,J] = ResolutionExactProbleme2(N,x0,e,Q,De);
 toc
 
 verif_sol = @(x) struct('J', [e'*x, e'*sol_exacte], ...
@@ -31,8 +33,8 @@ verif_sol = @(x) struct('J', [e'*x, e'*sol_exacte], ...
                         'De',[x'*Q*x, De], ...
                         'u', [x', sol_exacte']);
 
-verif_sol(u(:,end))
-
+%verif_sol(u(:,end))
+verif_sol(x)
 %% Affichage de la solution
 figure(1);
 color = ['m' 'c'];

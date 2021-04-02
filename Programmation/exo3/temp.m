@@ -41,3 +41,13 @@ end
 rep = u(:, end);
 [e'*rep De]
 sum(rep)
+
+%%
+
+func_con = @(x) {3*x^2,x+1};
+res = func_con(1);
+res(1) 
+res(2)
+
+
+
