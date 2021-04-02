@@ -10,7 +10,7 @@ function [bool1,bool2,bool3,bool4,bool5,OK] = Test_KKT(A,b,C_in,d_in,mu,C_eq,d_e
     bool2 = prod(condition2);
 
     %Contraintes inégalite * multiplicateur null:
-    condition3 = abs(lambda.*(C_in*u - d_in)) <= tolerance;
+    condition3 = abs(mu.*(C_in*u - d_in)) <= tolerance;
     bool3 = prod(condition3);
 
     %Contraintes egalite:
