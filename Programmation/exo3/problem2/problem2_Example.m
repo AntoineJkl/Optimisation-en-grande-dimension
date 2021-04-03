@@ -1,11 +1,13 @@
 clear 
 %----------------------- Données
-% jouet 1
+% commenter et decommenter les exemples selon celui a tester
+
+%exemple 1
 % Q = [3/2 0; 0 2];
 % e = [3; 2];
 % De = 1;
 
-% jouet 2
+%exemple 2
 Q = [1 1; 1 2];
 e = [1; 2];
 De = 3/2;
