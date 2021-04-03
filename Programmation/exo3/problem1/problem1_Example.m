@@ -1,19 +1,21 @@
 clear
 %----------------------- Données
-%jouet 1
+% commenter et decommenter les exemples selon celui a tester
+
+%exemple 1
 Q = [2 1; 1 2];
 e = [4; 5];
 Re = 9/2;
 sol_exacte = [1; 1]/2;
 %[1.5 .1 10]
 
-%jouet 2
+%exemple 2
 Q = [6 3; 3 10/3];
 e = [5/4; 3];
 Re = 5/2;
 sol_exacte = [1; 9]/10;
 
-%jouet 3
+%exemple 3
 Q = [3 1 0; 1 5 1; 0 1 2];
 e = [1; 2; 3];
 Re = 1;

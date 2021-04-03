@@ -16,7 +16,7 @@ function [ u ] = problem1_PPA(Q, e, Re, param)
     end
     
     %----------------------- Parametres de l'algorithme d'Uzawa
-    addpath('../Algorithme')
+    addpath('../../Algorithme')
     param_Uzawa = struct('rho', .1, ...
                          'Lambda', 0, ...
                          'Mu', 0);
