@@ -19,8 +19,8 @@ end
 sol_exacte = problem2_Solver(e, Q, De);
 
 param = struct('alpha', @(k) 2, ... #convexite auxiliaire
-               'eps', @(k) .1, ... #auxiliaire 
-               'beta', 10, ...  #actualisation des prix 
+               'eps', @(k) .1, ...  #auxiliaire 
+               'beta', 10, ...      #actualisation des prix 
                'kmax', 1000,...
                'seuil', 1e-6);
 
@@ -28,7 +28,7 @@ tic
 u = problem2_PPA(Q, e, De, param);
 toc
 
-% Comparaison des solutions
+%----------------------- Comparaison des solutions
 str = @(x) num2str(x);
 verif_sol = @(x) struct('J', e'*x , ...
                         'J_exa', e'*sol_exacte,...

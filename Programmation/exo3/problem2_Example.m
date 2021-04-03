@@ -24,7 +24,7 @@ toc
 %resolution par le solveur matlab
 sol_exacte = problem2_Solver(e, Q, De);
 
-%----------------------- Affichage solution
+%----------------------- Verification de la solution
 str = @(x) num2str(x);
 verif_sol = @(x) struct('J', e'*x , ...
                         'J_exa', e'*sol_exacte,...

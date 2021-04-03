@@ -1,5 +1,8 @@
 function [ u ] = problem2_PPA(Q, e, De, param)
 %PROBLEM2_PPA Resolution du probleme 2 par la methode du probleme auxiliaire
+% Q: matrice de covariance
+% e: esperance
+% De: dose de risque maximale
 % param: struct avec | alpha : force convexite auxiliaire
 %                    | eps : coefficient auxiliaire 
 %                    | beta : actualisation des prix 
@@ -18,14 +21,14 @@ function [ u ] = problem2_PPA(Q, e, De, param)
     param_Uzawa = struct('rho', .1, ...
                          'mu', 0, ...
                          'lambda', 0);
-    mu = zeros(N,1); % multiplicateurs
+    mu = zeros(N,1); % vecteur des multiplicateurs
     
     %----------------------- Variables du probleme
     QA = diag(diag(Q));
     QC = Q - QA;
 
-    u = ones(N, 1)/N; % solution initiale
-    U = zeros(N, param.kmax); %solution a chaque instant
+    u = ones(N, 1)/N; %solution initiale
+    U = zeros(N, param.kmax); %solutions a chaque instant
     
     err = @(x, y) norm(x-y, 2)/norm(x, 2); % fonction d'erreur
 
@@ -44,7 +47,7 @@ function [ u ] = problem2_PPA(Q, e, De, param)
     %-----------------------Resolution du probleme
     k = 1;
     while (k<=2 || ((err(u, u_prec) + err(prix.p, prix.p_prec))>ppa.seuil && k<ppa.kmax))
-        % sauvegarde de l'iteration
+        % sauvegarde de l'iteration precedente
         U(:, k) = u; 
         prix.p_prec = prix.p;
         u_prec = u;
