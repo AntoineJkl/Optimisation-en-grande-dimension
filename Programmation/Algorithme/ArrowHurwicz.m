@@ -8,8 +8,6 @@ function [U,Lambda,Mu,k] = ArrowHurwicz(A,b,C_eq,d_eq,C_in,d_in,param)
     if ismember('eps',fieldnames(param)) ; eps=param.eps ; else eps=10^(-5) ; end
     if ismember('kmax',fieldnames(param)) ; kmax=param.kmax ; else kmax=10000 ; end
     if ismember('U_ini',fieldnames(param)) ; U_ini=param.U_ini ; else U_ini=zeros(size(A,1),1); end
-    if ismember('U_lb',fieldnames(param)) ; U_lb=param.U_lb ; else U_lb = -Inf(size(U_ini)); end
-    if ismember('U_ub',fieldnames(param)) ; U_ub=param.U_ub ; else U_ub = Inf(size(U_ini)); end
     
     %Initialisation
     k = 1;
@@ -22,7 +20,7 @@ function [U,Lambda,Mu,k] = ArrowHurwicz(A,b,C_eq,d_eq,C_in,d_in,param)
         %Stockage de U precedent
         prec = U;
         %Récupération de U (Formule de projection)
-        U = max(U_lb , min(U_ub , U - rho1*(2*A*U - b + C_eq'*Lambda + C_in'*Mu)) );
+        U = U - rho1*(2*A*U - b + C_eq'*Lambda + C_in'*Mu);
         %Mise a jour des multiplicateurs de Lagrange
         Lambda = Lambda + rho2*(C_eq*U - d_eq);
         Mu = max(0,Mu + rho2*(C_in*U - d_in));
