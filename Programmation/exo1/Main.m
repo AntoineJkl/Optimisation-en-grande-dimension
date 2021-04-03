@@ -46,7 +46,7 @@ rho = 0.1;
 eps = 10^(-6);
 kmax = 10000;
 [u1_prix,p1_prix,k1_prix,J1_prix,~,~] = DecompositionPrix(N1,A1,b1,C1,rho,eps,kmax,false);
-[u1_alloc,omega1_alloc,k1_alloc,J1_alloc,~,~] = DecompositionQuantites(N1,A1,b1,C1,eps,kmax,false);
+[u1_alloc,omega1_alloc,k1_alloc,J1_alloc,~,~] = DecompositionQuantites(N1,A1,b1,C1,rho,eps,kmax,false);
 [u1_pred,omega1_pred,k1_pred,J1_pred,~,~] = DecompositionPrediction(N1,A1,b1,C1,eps,kmax,false);
 
 %% Pour N = 3:
@@ -57,7 +57,7 @@ rho = 0.1;
 eps = 10^(-6);
 kmax = 10000;
 [u2_prix,p2_prix,k2_prix,J2_prix,~,~] = DecompositionPrix(N2,A2,b2,C2,rho,eps,kmax,false);
-[u2_alloc,omega2_alloc,k2_alloc,J2_alloc,~,~] = DecompositionQuantites(N2,A2,b2,C2,eps,kmax,false);
+[u2_alloc,omega2_alloc,k2_alloc,J2_alloc,~,~] = DecompositionQuantites(N2,A2,b2,C2,rho,eps,kmax,false);
 [u2_pred,omega2_pred,k2_pred,J2_pred,~,~] = DecompositionPrediction(N2,A2,b2,C2,eps,kmax,false);
 
 %% Pour N = 4:
@@ -68,7 +68,7 @@ rho = 0.1;
 eps = 10^(-6);
 kmax = 10000;
 [u3_prix,p3_prix,k3_prix,J3_prix,~,~] = DecompositionPrix(N3,A3,b3,C3,rho,eps,kmax,false);
-[u3_alloc,omega3_alloc,k3_alloc,J3_alloc,~,~] = DecompositionQuantites(N3,A3,b3,C3,eps,kmax,false);
+[u3_alloc,omega3_alloc,k3_alloc,J3_alloc,~,~] = DecompositionQuantites(N3,A3,b3,C3,rho,eps,kmax,false);
 [u3_pred,omega3_pred,k3_pred,J3_pred,~,~] = DecompositionPrediction(N3,A3,b3,C3,eps,kmax,false);
 
 %% Pour N = 5:
@@ -80,7 +80,7 @@ eps = 10^(-6);
 kmax = 10000;
 
 [u4_prix,p4_prix,k4_prix,J4_prix,~,~] = DecompositionPrix(N4,A4,b4,C4,rho,eps,kmax,false);
-[u4_alloc,omega4_alloc,k4_alloc,J4_alloc,~,~] = DecompositionQuantites(N4,A4,b4,C4,eps,kmax,false);
+[u4_alloc,omega4_alloc,k4_alloc,J4_alloc,~,~] = DecompositionQuantites(N4,A4,b4,C4,rho,eps,kmax,false);
 [u4_pred,omega4_pred,k4_pred,J4_pred,~,~] = DecompositionPrediction(N4,A4,b4,C4,eps,kmax,false);
 
 
@@ -93,26 +93,26 @@ kmax = 10000;
 %% Question 3
 % On reprend les valeurs de A4, b4, C4 de l'encadré précédent
 %[~,p4_prix,~,~,~,U_prix] = DecompositionPrix(N4,A4,b4,C4,rho,eps,kmax,true);
-[~,omega4_alloc,~,~,~,U_alloc,kkt_test] = DecompositionQuantites(N4,A4,b4,C4,rho,eps,kmax,true,true);
+%[~,omega4_alloc,~,~,~,U_alloc,kkt_test] = DecompositionQuantites(N4,A4,b4,C4,rho,eps,kmax,true,true);
 %[~,omega4_pred,~,~,~,U_pred] = DecompositionPrediction(N4,A4,b4,C4,eps,kmax,true);
 
 %%
 %Pour tester à l'itération j :
-j = 10;
-disp(['Itération ',num2str(j),' :'])
-disp(['Décomposition par les prix :',mat2str(Test_KKT(A4,b4,C4,0,p4_prix,0,0,0,U_prix(:,min(j,length(U_prix))),0.01))]);
-disp(['Décomposition par les quantités :',mat2str(Test_KKT(A4,b4,C4,0,omega4_alloc,0,0,0,U_alloc(:,min(j,length(U_alloc))),0.01))]);
-disp(['Décomposition par prédiction :',mat2str(Test_KKT(A4,b4,C4,0,omega4_pred,0,0,0,U_pred(:,min(j,length(U_pred))),0.01))]);
+% j = 10;
+% disp(['Itération ',num2str(j),' :'])
+% disp(['Décomposition par les prix :',mat2str(Test_KKT(A4,b4,C4,0,p4_prix,0,0,0,U_prix(:,min(j,length(U_prix))),0.01))]);
+% disp(['Décomposition par les quantités :',mat2str(Test_KKT(A4,b4,C4,0,omega4_alloc,0,0,0,U_alloc(:,min(j,length(U_alloc))),0.01))]);
+% disp(['Décomposition par prédiction :',mat2str(Test_KKT(A4,b4,C4,0,omega4_pred,0,0,0,U_pred(:,min(j,length(U_pred))),0.01))]);
 
 %%
 %On teste aux itérations j = 5,10,20,50,100,500 et 1000 des 3 algorithmes
-
-for j = [5,10,20,50,100,500,1000]
-    disp(['Itération ',num2str(j),' :'])
-    disp(['Décomposition par les prix :',mat2str(Test_KKT(A4,b4,C4,0,p4_prix,0,0,0,U_prix(:,min(j,length(U_prix))),0.01))]);
-    disp(['Décomposition par les quantités :',mat2str(Test_KKT(A4,b4,C4,0,omega4_alloc,0,0,0,U_alloc(:,min(j,length(U_alloc))),0.01))]);
-    disp(['Décomposition par prédiction :',mat2str(Test_KKT(A4,b4,C4,0,omega4_pred,0,0,0,U_pred(:,min(j,length(U_pred))),0.01))]);
-end
+% 
+% for j = [5,10,20,50,100,500,1000]
+%     disp(['Itération ',num2str(j),' :'])
+%     disp(['Décomposition par les prix :',mat2str(Test_KKT(A4,b4,C4,0,p4_prix,0,0,0,U_prix(:,min(j,length(U_prix))),0.01))]);
+%     disp(['Décomposition par les quantités :',mat2str(Test_KKT(A4,b4,C4,0,omega4_alloc,0,0,0,U_alloc(:,min(j,length(U_alloc))),0.01))]);
+%     disp(['Décomposition par prédiction :',mat2str(Test_KKT(A4,b4,C4,0,omega4_pred,0,0,0,U_pred(:,min(j,length(U_pred))),0.01))]);
+% end
 
 
 

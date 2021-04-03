@@ -48,7 +48,9 @@ function [u,omega,k,J,t2,U_final] = DecompositionQuantites(N,A,b,C,rho,eps,kmax,
         k = k + 1;
         
         %Mise a jour du critere
+        %critere = Test_KKT(A,b,C,0,sum(Mu,2),0,0,0,u,10^-1);
         critere = (norm(u - u_prec) < eps);
+        %critere = (norm(omega - omega_prec,inf)/norm(omega,inf) < eps);
     
         if bigU
         %Mise à jour des solutions calculées
