@@ -5,8 +5,8 @@ clc;
 Donnees_SmartGrids_Scenario1;
 
 %Initialisation du problème général:
-rho = 0.2;
-eps = 10^(-3);
+rho = 0.05;
+eps = 10^(-4);
 kmax = 10000;
 
 parametres = struct('rho', rho, ...
@@ -15,11 +15,11 @@ parametres = struct('rho', rho, ...
 
 %Initialisation des sous-problèmes:
 choix = 1; %1 = Uzawa, 0 = Arrow
-rho_sp_uzawa = 0.5;
+rho_sp_uzawa = 0.01;
 rho_sp_arrow1 = 0.001;
 rho_sp_arrow2 = 0.001;
 eps_sp = 10^(-4);
-kmax_sp = 10000;
+kmax_sp = 5000;
 
 parametres_sousproblemes = struct('choix',choix,...
                     'rho_sp_uzawa',rho_sp_uzawa,...
@@ -69,7 +69,7 @@ clc;
 Donnees_SmartGrids_Scenario2;
 
 %Initialisation du problème général:
-rho = 0.1;
+rho = 0.05;
 eps = 10^(-4);
 kmax = 10000;
 
@@ -79,11 +79,11 @@ parametres = struct('rho', rho, ...
 
 %Initialisation des sous-problèmes:
 choix = 1; %1 = Uzawa, 0 = Arrow
-rho_sp_uzawa = 0.1;
+rho_sp_uzawa = 0.01;
 rho_sp_arrow1 = 0.001;
 rho_sp_arrow2 = 0.001;
 eps_sp = 10^(-4);
-kmax_sp = 10000;
+kmax_sp = 5000;
 
 parametres_sousproblemes = struct('choix',choix,...
                     'rho_sp_uzawa',rho_sp_uzawa,...
@@ -133,9 +133,9 @@ clc;
 Donnees_SmartGrids_Scenario1;
 
 %Initialisation du problème général:
-rho = 0.1;
+rho = 0.00001;
 eps = 10^(-4);
-kmax = 10000;
+kmax = 50000;
 
 parametres = struct('rho', rho, ...
                     'eps', eps, ...
@@ -143,10 +143,10 @@ parametres = struct('rho', rho, ...
 
 %Initialisation des sous-problèmes:
 choix = 1; %1 = Uzawa, 0 = Arrow
-rho_sp_uzawa = 0.05;
-rho_sp_arrow1 = 0.001;
-rho_sp_arrow2 = 0.001;
-eps_sp = 10^(-3);
+rho_sp_uzawa = 0.001;
+rho_sp_arrow1 = 0.1;
+rho_sp_arrow2 = 0.1;
+eps_sp = 10^(-4);
 kmax_sp = 5000;
 
 parametres_sousproblemes = struct('choix',choix,...
@@ -157,7 +157,7 @@ parametres_sousproblemes = struct('choix',choix,...
                     'kmax_sp',kmax_sp);
 
 %Algorithme de decomposition par les prix:
-[P,~,k,J_opt,time] = DecompositionQuantites(N,P0,a,b,Pmax,parametres,parametres_sousproblemes);
+[P,~,k,J_opt,Omega,time] = DecompositionQuantites(N,P0,a,b,Pmax,parametres,parametres_sousproblemes);
 P_final = P(:,end);
 
 %Affichage solution finale:
@@ -197,9 +197,9 @@ clc;
 Donnees_SmartGrids_Scenario2;
 
 %Initialisation du problème général:
-rho = 0.1;
+rho = 0.01;
 eps = 10^(-4);
-kmax = 10000;
+kmax = 20000;
 
 parametres = struct('rho', rho, ...
                     'eps', eps, ...
@@ -207,10 +207,10 @@ parametres = struct('rho', rho, ...
 
 %Initialisation des sous-problèmes:
 choix = 1; %1 = Uzawa, 0 = Arrow
-rho_sp_uzawa = 0.005;
+rho_sp_uzawa = 0.001;
 rho_sp_arrow1 = 0.001;
 rho_sp_arrow2 = 0.001;
-eps_sp = 10^(-3);
+eps_sp = 10^(-4);
 kmax_sp = 5000;
 
 parametres_sousproblemes = struct('choix',choix,...
@@ -221,7 +221,7 @@ parametres_sousproblemes = struct('choix',choix,...
                     'kmax_sp',kmax_sp);
 
 %Algorithme de decomposition par les prix:
-[P,~,k,J_opt,time] = DecompositionQuantites(N,P0,a,b,Pmax,parametres,parametres_sousproblemes);
+[P,~,k,J_opt,Omega,time] = DecompositionQuantites(N,P0,a,b,Pmax,parametres,parametres_sousproblemes);
 P_final = P(:,end);
 
 %Affichage solution finale:

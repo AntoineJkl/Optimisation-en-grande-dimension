@@ -41,11 +41,11 @@ function [u,omega,k,J,t2,U_final,KKT_fin] = DecompositionQuantites(N,A,b,C,rho,e
                     'kmax', kmax_sp);
             [u(i),~,Mu(:,i),~] = Uzawa(A_sp,b_sp,0,0,C_in_sp,d_in,param_sp);
             
-            % Attention, fonctionne pas trop trop
+            %{
             if KKT
                 KKT_sp(:,i) = Test_KKT(A_sp,b_sp,C_in_sp,d_in,Mu(:,i),0,0,0,u(i),0.01);
             end
-            %%%%%
+            %}
         end
         
         %Coordination:

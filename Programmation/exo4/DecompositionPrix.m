@@ -27,6 +27,8 @@ function [P_sol,p,k,J,t] = DecompositionPrix(N,P0,a,b,Pmax,parametres,parametres
     while( k <= 2 || ((norm(P - P_prec,2) > eps) && k <= kmax))
         P_prec = P;
         
+        disp(['Iterration: ',num2str(k)]);
+        
         %Décomposition:
         for i = 1:N
                 %Donnees des sous-problemes:
@@ -46,8 +48,9 @@ function [P_sol,p,k,J,t] = DecompositionPrix(N,P0,a,b,Pmax,parametres,parametres
                         'mu_ini' , mu(i) , ...
                         'lambda_ini' , lambda(i) , ...
                         'eps', eps_sp, ...
-                        'kmax', kmax_sp);
-                [P(i),lambda(i),mu(i),~] = ArrowHurwicz(A_sp,b_sp,0,0,C_in,d_in,param_sp_arrow);
+                        'kmax', kmax_sp,...
+                        'U_ub',Pmax(i));
+                [P(i),lambda(i),mu(i),~] = ArrowHurwicz(A_sp,b_sp,0,0,0,0,param_sp_arrow);
             end
         end
         
