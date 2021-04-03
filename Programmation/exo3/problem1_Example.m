@@ -1,20 +1,19 @@
 clear 
+
 % Synthaxe Wolfram
 % Minimize[{6*x^2 + 6*x*y + 10/3*y^2 , 5/4*x + 3*y <= 3/2, x>=0,y>=0, x+y=1},{x,y}]
 
 %jouet 1
-% Q = [2 1; 1 2];
-% e = [4; 5];
-% Re = 9/2;
-% sol_exacte = [1; 1]/2;
-% N = 2;
+Q = [2 1; 1 2];
+e = [4; 5];
+Re = 9/2;
+sol_exacte = [1; 1]/2;
 %[1.5 .1 10]
 
 % Q = [6 3; 3 10/3];
 % e = [5/4; 3];
 % Re = 5/2;
 % sol_exacte = [2; 5]/7;
-% N = 2;
 
 %jouet 2
 % Q = [3 1 0; 1 5 1; 0 1 2];
@@ -25,26 +24,27 @@ clear
 
 % ------------ Résolution du problème
 
-param = struct('alpha', @(k) 1.5, ... #convexite auxiliaire
+param = struct('alpha', @(k) 2, ... #convexite auxiliaire
                'eps', @(k) .1, ... #auxiliaire 
-               'beta', 1, ...  #actualisation des prix 
+               'beta', 4, ...  #actualisation des prix 
                'kmax', 1000,...
                'seuil', 1e-6);
 
 tic
-%u = problem_1(Q, e, Re, param);
-x0 = ones(N,1)/N;
-[x,J] = ResolutionExactProbleme1(N,x0,Q,e,Re);
+u = problem1_PPA(Q, e, Re, param);
 toc
+
+[sol_exacte,J] = problem1_Solver(Q,e,Re);
 
 %u = problem_1_dorine(Q, e, Re);
 
+str = @(x) num2str(x);
 verif_sol = @(x) struct('J', [x'*Q*x, sol_exacte'*Q*sol_exacte], ...
-                        'l', [sum(x) 1], ...
-                        'Re',[e'*x, Re], ...
+                        'l', [str(sum(x)), ' == ', str(1)], ...
+                        'Re',[str(e'*x), ' >= ', str(Re)], ...
                         'u', [x', sol_exacte']);
 
-%verif_sol(u(:,end))
+verif_sol(u(:,end))
 %% Affichage de la solution
 figure(1);
 color = ['m' 'c'];

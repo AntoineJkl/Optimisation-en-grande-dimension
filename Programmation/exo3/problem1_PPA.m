@@ -1,4 +1,4 @@
-function [ u ] = problem_1(Q, e, Re, param)
+function [ u ] = problem1_PPA(Q, e, Re, param)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
     addpath('../Algorithme')
@@ -9,12 +9,12 @@ function [ u ] = problem_1(Q, e, Re, param)
         return;
     end
     
-    param_Uzawa = struct('rho', .01, ...
+    param_Uzawa = struct('rho', .1, ...
                          'Lambda', 0, ...
                          'Mu', 0);
     mu = zeros(N,1);
     
-    kmax = 1000;
+    kmax = param.kmax;
     %----------------------- Variables du problème
     % décomposition de l'objectif
     QA = diag(diag(Q));
@@ -37,7 +37,7 @@ function [ u ] = problem_1(Q, e, Re, param)
                  'alpha', param.alpha);
 
     %-----------------------Resolution du problème
-    k = 1;    
+    k = 1;
     while (k<=2 || ((err(u, u_prec) + err(prix.p, prix.p_prec))>ppa.seuil && k<ppa.kmax))
         U(:, k) = u;
         prix.p_prec = prix.p;
