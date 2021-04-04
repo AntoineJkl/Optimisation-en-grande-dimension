@@ -17,15 +17,15 @@ end
 %----------------------- Résolution du problème
 sol_exacte = problem1_Solver(Q, e,Re);
 
-param = struct('alpha', @(k) 2, ... #convexite auxiliaire
-               'eps', @(k) .1, ...  #auxiliaire 
-               'beta', .3, ...      #actualisation des prix 
+param = struct('alpha', @(k) 2, ... %convexite auxiliaire
+               'eps', @(k) .1, ...  %auxiliaire 
+               'beta', .3, ...      %actualisation des prix 
                'kmax', 1000,...
                'seuil', 1e-6);
 
 tic
 u = problem1_PPA(Q, e, Re, param);
-toc
+disp(['Temps resolution : ', num2str(toc)])
 
 %----------------------- Comparaison des solutions
 str = @(x) num2str(x);
