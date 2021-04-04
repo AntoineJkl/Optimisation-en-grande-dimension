@@ -559,7 +559,7 @@ CheckKKT{5}(cond5_pred);
 disp(' ');
 %%
 
-N =8;
+N =15;
 [A,b,C] = CreateInstance(N);
 
 %PARAMETRES GENERAUX:
@@ -625,13 +625,13 @@ CheckKKT{4}(cond4_allocj);
 CheckKKT{5}(cond5_allocj);
 disp(' ');
 %Decomposition par prediction:
-[OK_predj,cond1_predj,cond2_predj,cond3_predj,cond4_predj,cond5_predj] = Test_KKT(A,b,C,zeros(N,1),Mu_pred_final(:,j),0,0,0,U_pred_final(:,j),0.001);
+[OK_predj,cond1_predj,cond2_predj,cond3_predj,cond4_predj,cond5_predj] = Test_KKT(A,b,C,zeros(N,1),Mu_pred_final(:,j),0,0,0,u(:,j),0.001);
 disp(['Conditions KKT verifiees pour la decomposition par prix ?: ',num2str(OK_prixj)]);
-CheckKKT{1}(cond1_predj);
-CheckKKT{2}(cond2_predj);
-CheckKKT{3}(cond3_predj);
-CheckKKT{4}(cond4_predj);
-CheckKKT{5}(cond5_predj);
+CheckKKT{1}(cond1_prixj);
+CheckKKT{2}(cond2_prixj);
+CheckKKT{3}(cond3_prixj);
+CheckKKT{4}(cond4_prixj);
+CheckKKT{5}(cond5_prixj);
 disp(' ');
 
 %%

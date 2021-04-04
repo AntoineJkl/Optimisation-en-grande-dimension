@@ -1,28 +1,36 @@
-function [u,omega,k,J,t2,U_final] = DecompositionQuantites(N,A,b,C,rho,eps,kmax,bigU)
+function [u,Mu_,k,J,t2,U_final,Mu_final] = DecompositionQuantites(N,A,b,C,parametres,parametres_sousproblemes)
     t1=tic;
     %Pour ajouter les algorithmes (Uzawa et Arrow)
     addpath('..\Algorithme');
+    
+    %Paramètres;
+    if ismember('rho',fieldnames(parametres)) ; rho=parametres.rho ; else rho=0.05 ; end
+    if ismember('eps',fieldnames(parametres)) ; eps=parametres.eps ; else eps=10e-5 ; end
+    if ismember('kmax',fieldnames(parametres)) ; kmax=parametres.kmax ; else kmax=5000 ; end
+    if ismember('PrintIt',fieldnames(parametres)) ; PrintIt=parametres.PrintIt ; else PrintIt=false ; end
+    if ismember('bigU',fieldnames(parametres)) ; bigU=parametres.bigU ; else bigU=false ; end
+    if ismember('bigMu',fieldnames(parametres)) ; bigMu=parametres.bigU ; else bigMu=false ; end
+    if ismember('rho_sp',fieldnames(parametres_sousproblemes)) ; rho_sp=parametres_sousproblemes.rho_sp_uzawa ; else rho_sp=0.01 ; end
+    if ismember('eps_sp',fieldnames(parametres_sousproblemes)) ; eps_sp=parametres_sousproblemes.eps_sp ; else eps_sp = 10e-4 ; end
+    if ismember('kmax_sp',fieldnames(parametres_sousproblemes)) ; kmax_sp=parametres_sousproblemes.kmax_sp ; else kmax_sp = 3000 ; end
 
     %Initialisation generale:
     U_final=[]; %Vecteur des solutions à chaque temps i
-    KKT_fin=[]; %Vecteur pour savoir si à une itération donnée, les sous problèmes respectent KKT
+    Mu_final=[]; %Vecteur des multiplicateurs à chaque iteration i
     k = 1; %Iteration
     u = zeros(N,1); %Solution
     omega = zeros(N,N); %Allocations
     Mu = zeros(N,N); %Multiplicateurs
-    
-    %Initialisation des sous-problemes:
-    rho_sp = 0.1;
-    eps_sp = 10^(-4);
-    kmax_sp = 10000;
-    critere = 0;
-    
-    %(norm(u - u_prec,2)/norm(u,2) + norm(omega - omega_prec,inf)/norm(omega,inf) > eps)
+    critere = 0; %Critere d'arret
     
     while( k <= 2 || (~critere && k <= kmax) )
         
-        %disp(['iteration: ',num2str(k)]);
+        %Affichage de l'iteration courante:
+        if PrintIt
+            disp(['Iteration - Quantites: ',num2str(k)]);
+        end
         
+        %Solution et prix de l'etape precedente:
         u_prec = u;
         omega_prec = omega;
         
@@ -49,21 +57,23 @@ function [u,omega,k,J,t2,U_final] = DecompositionQuantites(N,A,b,C,rho,eps,kmax,
         
         %Mise a jour du critere
         critere = (norm(u - u_prec) < eps);
-    
+        
         if bigU
         %Mise à jour des solutions calculées
             U_final=[U_final,u];
         end
         
-        % Attention, fonctionne pas trop trop
-%         if KKT
-%             KKT_fin = [KKT_fin,prod(KKT_sp,2)];
-%         end
-        %%%%
+        if bigMu
+        %Mise à jour des multiplicateurs calculées
+            Mu_final=[Mu_final,mean(Mu,2)];
+        end
     end
     
     %Calcul de la valeur optimale
     J = 1/2*u'*A*u - b'*u;
+    
+    %Calcul des multiplicateurs:
+    Mu_ = mean(Mu,2);
     
     t2=toc(t1);
 end

@@ -1,4 +1,4 @@
-function [OK] = Test_KKT(A,b,C_in,d_in,mu,C_eq,d_eq,lambda,u,tolerance)
+function [OK,bool1,bool2,bool3,bool4,bool5] = Test_KKT(A,b,C_in,d_in,mu,C_eq,d_eq,lambda,u,tolerance)
     %lambda -> contraintes egalites
     %mu -> contraintes inegalites
     %Contraintes d'inégalite:

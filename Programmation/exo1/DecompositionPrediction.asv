@@ -1,4 +1,4 @@
-function [u,p,k,J,t2,U_final,Mu_final] = DecompositionPrediction(N,A,b,C,parametres,parametres_sousproblemes)
+function [u,p,k,J,t2,U_final,Mu_fi] = DecompositionPrediction(N,A,b,C,parametres,parametres_sousproblemes)
     t1=tic;
     
     %Pour ajouter les algorithmes (Uzawa et Arrow)
@@ -18,7 +18,6 @@ function [u,p,k,J,t2,U_final,Mu_final] = DecompositionPrediction(N,A,b,C,paramet
 
     %Initialisation generale:
     U_final=[]; %Vecteur des solutions à chaque temps i
-    Mu_final=[]; %Vecteur des multiplicateurs à chaque iteration i
     k = 1; %Iteration
     u = zeros(N,1); %Solution
     v = zeros(N,1); %Second membre
@@ -79,11 +78,6 @@ function [u,p,k,J,t2,U_final,Mu_final] = DecompositionPrediction(N,A,b,C,paramet
         if bigU
         %Mise à jour des solutions calculées
             U_final=[U_final,u];
-        end
-
-        if bigMu
-        %Mise à jour des multiplicateurs calculées
-            Mu_final=[Mu_final,p];
         end
     end
     
