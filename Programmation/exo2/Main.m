@@ -31,7 +31,7 @@ param_quantite1 = struct('rho', 0.4, ...
                     'kmax', 100);
 
 disp('Solution par la décomposition par les quantités');
-[u1_quantites,v1_quantites,~,k1_quantites,~,u_stock_quantites1] = DecompositionQuantites(N1,A1,C1,param_quantite1);
+[u1_quantites,v1_quantites,~,k1_quantites,J,u_stock_quantites1] = DecompositionQuantites(N1,A1,C1,param_quantite1);
 u1_quantites
 v1_quantites
 
@@ -180,12 +180,14 @@ plot(1:k1_prix,u11,1:k1_prix,u12);
 plot([0,k1_prix],[1 1],'--ro');
 plot([0, k1_prix],[0.5263 0.5263],'--ko');
 legend('u11 prix','u12 prix','u11 theo','u12 theo');
+xlabel('Iterations');
 title('Convergence algorithme de décomposition par les prix');
 hold off;
 
 figure
 plot(1:k1_prix,abs(u21-u11),1:k1_prix,abs(u22-u12));
 legend('prix dim 1','prix dim 2');
+xlabel('Iterations');
 title('Erreur d egalite au niveau de la contrainte couplante (prix)')
 
 %% Affichage question 1 quantites
@@ -204,6 +206,7 @@ plot([0,max(k1_quantites,k1_quantites2)],[1 1],'--ro');
 plot([0,max(k1_quantites,k1_quantites2)],[0.5263 0.5263],'--ko');
 plot([k1_quantites,k1_quantites],[0 2],'--r','Color',[0.5, 0.3, 0.15]);
 plot([k1_quantites2,k1_quantites2],[0 2],'--g');
+xlabel('Iterations');
 legend('u11 quantites','u12 quantites','u11 quantites2','u12 quantites1','u11 theo','u12 theo');
 title('Convergence algorithme de décomposition par les quantites');
 hold off;
@@ -213,6 +216,7 @@ hold on;
 plot(1:k1_quantites,abs(u211-u111),1:k1_quantites,abs(u221-u121));
 plot(1:k1_quantites2,abs(u212-u112),1:k1_quantites2,abs(u222-u122));
 ylim([0,1]);
+xlabel('Iterations');
 legend('quantites dim 1','quantites dim 2','quantites2 dim 1','quantites2 dim 2');
 title('Erreur d egalite au niveau de la contrainte couplante (quantite)')
 hold off;
@@ -237,6 +241,7 @@ plot([0,max(k1_pred_seq,k1_pred_par)],[1 1],'--ro');
 plot([0,max(k1_pred_seq,k1_pred_par)],[0.5263 0.5263],'--ko');
 plot([k1_pred_par,k1_pred_par],[0 2],'--r','Color',[0.5, 0.3, 0.15]);
 plot([k1_pred_seq,k1_pred_seq],[0 2],'--g');
+xlabel('Iterations');
 legend('u11 pred par','u12 pred par','u11 pred seq','u12 pred seq','u11 pred seq2','u12 pred seq2','u11 theo','u12 theo');
 title('Convergence algorithme de décomposition par prédiction');
 hold off;
@@ -247,6 +252,7 @@ plot(1:k1_pred_par,abs(u211-u111),1:k1_pred_par,abs(u221-u121));
 plot(1:k1_pred_seq,abs(u212-u112),1:k1_pred_seq,abs(u222-u122));
 plot(1:k1_pred_seq,abs(u213-u113),1:k1_pred_seq,abs(u223-u123));
 ylim([0,1]);
+xlabel('Iterations');
 legend('pred par dim 1','pred par dim 2','pred seq dim 1','pred seq dim 2','pred seq dim 1','pred seq dim 2');
 title('Erreur d egalite au niveau de la contrainte couplante (prédiction)')
 hold off;
