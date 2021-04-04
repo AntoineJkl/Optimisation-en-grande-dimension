@@ -820,8 +820,77 @@ legend('Décomposition par prix','Décomposition par quantités');
 xlabel('Pas (\rho)');
 ylabel('Temps d executon (en s)');
 
-%%
-%reste à tester de faire varier les paramètres alpha/bêta pour prédiction
+%% Variation des paramètres de relaxation
+%%%%  Attention /!\ long à l'execution %%%%
+
+%CREATION DE L'INSTANCE:
+N5 = 200;
+[A5,b5,C5] = CreateInstance(N5);
+
+%PARAMETRES GENERAUX:
+eps = 10^(-4); %Tolerance generale
+kmax = 10000; %Nombre d'iterations maximal
+PrintIt = false; %Affichage de chaque iteration dans la console
+bigU = false; %Recuperation de toutes les solutions a chaque iteration
+
+%PARAMETRES SOUS-PROBLEMES:
+rho_sp_uzawa = 0.01; %Pas des sous-problemes
+eps_sp = 10^(-4); %Tolerance des sous-problemes
+kmax_sp = 1000; %Nombre d'iterations maximal pour les sous-problemes
+
+%VALEURS DES PARAMETRES DE RELAXATION:
+beta_vec = 0.1:0.1:0.9;
+gamma_vec = 0.1:0.1:0.9;
+
+%VALEURS A MESURER:
+n=length(beta_vec);
+m=length(gamma_vec);
+
+k5_pred = zeros(n,m);
+t5_pred = zeros(n,m);
+
+disp('Execution en cours...');
+
+for i=1:n
+    for j = 1:m
+        disp(['i = ',num2str(i),' | j = ',num2str(j),' | beta = ',num2str(beta_vec(i)),' | gamma = ',num2str(gamma_vec(j))]);
+        
+        %Initialisation général:
+        beta = beta_vec(i);
+        gamma = gamma_vec(j);
+        parametres = struct('eps', eps, ...
+            'kmax', kmax,...
+            'PrintIt',PrintIt,...
+            'bigU',bigU,...
+            'beta',beta,...
+            'gamma',gamma);
+        
+        %Initialisation des sous-problèmes:
+        parametres_sousproblemes = struct('rho_sp_uzawa',rho_sp_uzawa,...
+            'eps_sp',eps_sp,...
+            'kmax_sp',kmax_sp);
+        
+        %Decomposition par les prix:
+        [~,~,k5_pred(i,j),~,t5_pred(i,j),~] = DecompositionPrediction(N5,A5,b5,C5,parametres,parametres_sousproblemes);
+        disp(' - Decomposition Prediction OK');
+    end
+end
+
+% AFFICHAGE EVOLUTION DU NOMBRE D'ITERATIONS
+figure(1)
+pcolor(beta_vec,gamma_vec,k5_pred);
+colorbar;
+title({'Evolution du nombre d''iterations','en fonction des valeurs de gamma et de beta','(Décomposition par prédiction)'});
+xlabel('gamma');
+ylabel('beta');
+
+%AFFICHAGE EVOLUTION DU TEMPS D'EXECUTION:
+figure(2)
+pcolor(beta_vec,gamma_vec,t5_pred);
+colorbar;
+title({'Evolution du temps d''execution','en fonction des valeurs de gamma et de beta','(Décomposition par prédiction)'});
+xlabel('gamma');
+ylabel('beta');
 
 
 
