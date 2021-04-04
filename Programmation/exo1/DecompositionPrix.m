@@ -17,8 +17,8 @@ function [u,p,k,J,t2,U_final,Mu_final] = DecompositionPrix(N,A,b,C,parametres,pa
     
     
     %Initialisation generale:
-    U_final=[]; %Vecteur des solutions à chaque iteration i
-    Mu_final=[]; %Vecteur des multiplicateurs à chaque iteration i
+    U_final=[]; %Vecteur des solutions a chaque iteration i
+    Mu_final=[]; %Vecteur des multiplicateurs a chaque iteration i
     k = 1; %Iteration
     u = zeros(N,1); %Solution
     p = zeros(N,1); %Prix
@@ -28,12 +28,11 @@ function [u,p,k,J,t2,U_final,Mu_final] = DecompositionPrix(N,A,b,C,parametres,pa
         
         %Affichage de l'iteration courante:
         if PrintIt
-            disp(['Iteration - Prix: ',num2str(k)]);
+            disp(['Itération - Prix: ',num2str(k)]);
         end
         
         %Solution et prix de l'etape precedente:
         u_prec = u;
-        p_prec = p;
         
         %Décomposition:
         for i = 1:N
@@ -53,16 +52,16 @@ function [u,p,k,J,t2,U_final,Mu_final] = DecompositionPrix(N,A,b,C,parametres,pa
         %Incrementation du nombre d'iterations:
         k = k + 1;
         
-        %Mise à jour du critere d'arret:
+        %Mise a jour du critere d'arret:
         critere = (norm(u - u_prec,2) < eps);
         
         if bigU
-        %Mise à jour des solutions calculées
+        %Mise a jour des solutions calculees
             U_final=[U_final,u];
         end
         
         if bigMu
-        %Mise à jour des multiplicateurs calculées
+        %Mise a jour des multiplicateurs calculees
             Mu_final=[Mu_final,p];
         end
     end

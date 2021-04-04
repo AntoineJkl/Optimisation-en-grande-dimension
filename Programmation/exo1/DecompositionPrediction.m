@@ -53,7 +53,7 @@ function [u,p,k,J,t2,U_final,Mu_final] = DecompositionPrediction(N,A,b,C,paramet
         %Calcul du prix:
         p = (1-beta)*p + beta*Mu;
         
-        %Resolution des autres sous-problemes:
+        %Resolution des autres sous-problemes :
         for i = 1:N
             if i ~= i0
                 A_sp = 1/2*A(i,i);
@@ -70,19 +70,19 @@ function [u,p,k,J,t2,U_final,Mu_final] = DecompositionPrediction(N,A,b,C,paramet
         %Mise-a-jour de v:
         v = (1-gamma)*v - gamma*C*u;
         
-        %Incrementation du nombre d'iterations:
+        %Incrementation du nombre d'iterations :
         k = k + 1;
         
-        %Mise a jour du critere d'arret:
+        %Mise a jour du critere d'arret :
         critere = (norm(u - u_prec,2) < eps);
         
         if bigU
-        %Mise à jour des solutions calculées
+        %Mise a jour des solutions calculees
             U_final=[U_final,u];
         end
 
         if bigMu
-        %Mise à jour des multiplicateurs calculées
+        %Mise a jour des multiplicateurs calculees
             Mu_final=[Mu_final,p];
         end
     end

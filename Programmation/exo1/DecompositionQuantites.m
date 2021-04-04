@@ -15,8 +15,8 @@ function [u,Mu_,k,J,t2,U_final,Mu_final] = DecompositionQuantites(N,A,b,C,parame
     if ismember('kmax_sp',fieldnames(parametres_sousproblemes)) ; kmax_sp=parametres_sousproblemes.kmax_sp ; else kmax_sp = 3000 ; end
 
     %Initialisation generale:
-    U_final=[]; %Vecteur des solutions à chaque temps i
-    Mu_final=[]; %Vecteur des multiplicateurs à chaque iteration i
+    U_final=[]; %Vecteur des solutions a chaque temps i
+    Mu_final=[]; %Vecteur des multiplicateurs a chaque iteration i
     k = 1; %Iteration
     u = zeros(N,1); %Solution
     omega = zeros(N,N); %Allocations
@@ -25,16 +25,16 @@ function [u,Mu_,k,J,t2,U_final,Mu_final] = DecompositionQuantites(N,A,b,C,parame
     
     while( k <= 2 || (~critere && k <= kmax) )
         
-        %Affichage de l'iteration courante:
+        %Affichage de l'iteration courante
         if PrintIt
             disp(['Iteration - Quantites: ',num2str(k)]);
         end
         
-        %Solution et prix de l'etape precedente:
+        %Solution et prix de l'etape precedente
         u_prec = u;
         omega_prec = omega;
         
-        %Décomposition:
+        %Decomposition
         for i = 1:N
             A_sp = 1/2*A(i,i);
             b_sp = b(i);
@@ -49,22 +49,22 @@ function [u,Mu_,k,J,t2,U_final,Mu_final] = DecompositionQuantites(N,A,b,C,parame
             [u(i),~,Mu(:,i),~] = Uzawa(A_sp,b_sp,0,0,C_in_sp,d_in,param_sp);
         end
         
-        %Coordination:
+        %Coordination
         omega = omega + rho*(Mu - repmat(mean(Mu,2),1,N));
         
-        %Incrementation du nombre d'iterations:
+        %Incrementation du nombre d'iterations
         k = k + 1;
         
         %Mise a jour du critere
         critere = (norm(u - u_prec) < eps);
         
         if bigU
-        %Mise à jour des solutions calculées
+        %Mise a jour des solutions calculees
             U_final=[U_final,u];
         end
         
         if bigMu
-        %Mise à jour des multiplicateurs calculées
+        %Mise a jour des multiplicateurs calculees
             Mu_final=[Mu_final,mean(Mu,2)];
         end
     end
@@ -72,7 +72,7 @@ function [u,Mu_,k,J,t2,U_final,Mu_final] = DecompositionQuantites(N,A,b,C,parame
     %Calcul de la valeur optimale
     J = 1/2*u'*A*u - b'*u;
     
-    %Calcul des multiplicateurs:
+    %Calcul des multiplicateurs
     Mu_ = mean(Mu,2);
     
     t2=toc(t1);

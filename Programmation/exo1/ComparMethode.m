@@ -1,6 +1,5 @@
 function [ U,t,k,complex ] = ComparMethode(parametres,parametres_sousproblemes,plotNpetit,plotNbIt,plotTmpsEx,plotComplex)
-    %%% Pas du tout fini
-    
+
     if plotNpetit
         disp('Execution en cours...');
         % Comparaison evolution des solutions pour chaque méthode pour N=5
@@ -12,11 +11,11 @@ function [ U,t,k,complex ] = ComparMethode(parametres,parametres_sousproblemes,p
 
         %Execution des algorithmes:
         [~,~,k(1),~,t(1),U1] = DecompositionPrix(N,A,b,C,parametres,parametres_sousproblemes);
-        disp(' - Decomposition Prix OK');
+        disp(' - Décomposition Prix OK');
         [~,~,k(2),~,t(2),U2] = DecompositionQuantites(N,A,b,C,parametres,parametres_sousproblemes);
-        disp(' - Decomposition Quantite OK');
+        disp(' - Décomposition Quantité OK');
         [~,~,k(3),~,t(3),U3] = DecompositionPrediction(N,A,b,C,parametres,parametres_sousproblemes);
-        disp(' - Decomposition Prediction OK');
+        disp(' - Décomposition Prédiction OK');
 
         %Affichage graphique
         figure(1)
@@ -47,7 +46,7 @@ function [ U,t,k,complex ] = ComparMethode(parametres,parametres_sousproblemes,p
     end
     
     if plotNbIt || plotTmpsEx || plotComplex
-        disp('Execution en cours...');
+        disp('Exécution en cours...');
         % Comparaison nb d'itérations/temps d'execution pour N variant de 5 à 50
         N_vec = 10:10:50;
         k_vec = zeros(3,length(N_vec));
@@ -63,11 +62,11 @@ function [ U,t,k,complex ] = ComparMethode(parametres,parametres_sousproblemes,p
             
             %Execution des algorithmes:
             [u1,~,k_vec(1,i),~,t_vec(1,i),~] = DecompositionPrix(n,A_temp,b_temp,C_temp,parametres,parametres_sousproblemes);
-            disp(' - Decomposition Prix OK');
+            disp(' - Décomposition Prix OK');
             [u2,~,k_vec(2,i),~,t_vec(2,i),~] = DecompositionQuantites(n,A_temp,b_temp,C_temp,parametres,parametres_sousproblemes);
-            disp(' - Decomposition Quantite OK');
+            disp(' - Décomposition Quantités OK');
             [u3,~,k_vec(3,i),~,t_vec(3,i),~] = DecompositionPrediction(n,A_temp,b_temp,C_temp,parametres,parametres_sousproblemes);
-            disp(' - Decomposition Prediction OK');
+            disp(' - Décomposition Prédiction OK');
             
             %Calcul des erreurs:
             if plotComplex
@@ -95,10 +94,10 @@ function [ U,t,k,complex ] = ComparMethode(parametres,parametres_sousproblemes,p
             %Evolution du temps d'execution:
             subplot(1,2,2)
             plot(N_vec,t_vec)
-            title('Temps d execution')
+            title('Temps d''exécution')
             legend('Prix','Quantités','Prédiction')
             xlabel('Taille N')
-            ylabel('Temps d execution (en s)')
+            ylabel('Temps d exécution (en s)')
         end
         if plotComplex
             %Evolution de l'erreur:
@@ -110,8 +109,5 @@ function [ U,t,k,complex ] = ComparMethode(parametres,parametres_sousproblemes,p
             ylabel('Erreur')
         end
     end
-
-    
-    
 end
 
