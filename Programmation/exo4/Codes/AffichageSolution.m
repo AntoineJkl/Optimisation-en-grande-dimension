@@ -1,9 +1,11 @@
-function [] = AffichageSolution(P_tab,P_exact)
+function [] = AffichageSolution(P_tab,P_exact,titre)
 
+    %Vecteur du nombre d'iterations:
     Iterations = 1:length(P_tab(1,:));
     plots_tab = [];
     
-    fig = figure(1);
+    %Positionnement de la Figure:
+    fig = figure();
     set(fig,'Position',[200 100 800 400]);
     
     %Centrale à charbon:
@@ -72,6 +74,6 @@ function [] = AffichageSolution(P_tab,P_exact)
     ylim([-14 14]);
     ylabel('Puissance fournie (MW)');
     xlabel('Iteration k');
-    title({'Convergence des solutions','pour chaque agent'});
+    title(titre);
 end
 
