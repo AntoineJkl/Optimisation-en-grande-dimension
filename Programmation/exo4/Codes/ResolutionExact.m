@@ -1,4 +1,4 @@
-function [P,J_opt] = ResolutionExact(N,P0,a,b,Pmax)
+function [P,J_opt,lambda] = ResolutionExact(N,P0,a,b,Pmax)
 
     A = diag(a);
     b_ = 2*a.*P0;
@@ -16,6 +16,7 @@ function [P,J_opt] = ResolutionExact(N,P0,a,b,Pmax)
     lb = [];
     ub = Pmax;
     options = optimoptions('fmincon','Display','off');
-    [P,J_opt] = fmincon(f,P_in,C_in,d_in,C_eq,d_eq,lb,ub,[],options);
+    [P,J_opt,~,~,multiplicateur] = fmincon(f,P_in,C_in,d_in,C_eq,d_eq,lb,ub,[],options);
+    lambda = multiplicateur.eqlin;
 end
 
