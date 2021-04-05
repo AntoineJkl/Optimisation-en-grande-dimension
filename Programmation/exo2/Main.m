@@ -17,6 +17,8 @@ A1(2,:,:)=[1 0 ; 0 2];
 C1=zeros(N1,2);
 C1(1,:)=[1 2];
 
+disp('### Uzawa et Arrow ###')
+
 param_prix = struct('rho', 1, ...
                     'eps', 10^(-3), ...
                     'algo','arrow',...
@@ -88,6 +90,8 @@ v1_pred_seq2
 clc;
 addpath('.\decomposition');
 
+disp('### Formule Explicite ###')
+
 param_quantite1 = struct('rho', 0.4, ...
                     'eps', 10^(-5), ...
                     'algo','explicite',...
@@ -112,6 +116,8 @@ v1_quantites2
 %% Test des decomposition par les prix, par les quantites et par prediction sur les exemples jouets ( programmation méthode point intérieur ) :
 clc;
 addpath('.\decomposition');
+
+disp('### Méthode des points intérieurs ###')
 
 param_prix = struct('rho', 1, ...
                     'eps', 10^(-3), ...
@@ -555,7 +561,7 @@ for N = N_tab
     disp(['N = ' num2str(N)]);
     [A,C] = CreationInstance(N,3,6,0,3,1,3);
 
-    addpath('.\sequentielle');
+    addpath('.\decomposition');
     
     
     %Decomposition par prédiction parallèle

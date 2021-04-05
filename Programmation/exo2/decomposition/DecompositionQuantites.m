@@ -2,9 +2,7 @@ function [u,v,w,k,J,u_stock] = DecompositionQuantites(N,A,C,param)
     %N : taille de l'instance du problème
     %A : matrice de la fonction objective de taille (N+1,2,2)
     %C : matrice de contraintes associée aux sous-problèmes de taille (N,2)
-    %rho : pas de gradient pour la coordination
-    %eps : précision de la décomposition par les prix
-    %kmax : nombre d'itérations max
+    %param : autres paramètres
     
     tic;
        
@@ -126,5 +124,6 @@ function [u,v,w,k,J,u_stock] = DecompositionQuantites(N,A,C,param)
         end
     end
     toc;
+    
 end
 
