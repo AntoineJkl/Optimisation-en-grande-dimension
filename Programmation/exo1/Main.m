@@ -550,7 +550,7 @@ disp(' ');
 %Decomposition par prediction:
 [u_pred,Mu_pred,~,~,~,~] = DecompositionPrediction(N,A,b,C,parametres,parametres_sousproblemes);
 [OK_pred,cond1_pred,cond2_pred,cond3_pred,cond4_pred,cond5_pred] = Test_KKT(A,b,C,zeros(N,1),Mu_pred,0,0,0,u_pred,0.001);
-disp(['Conditions KKT verifiées pour la décomposition par prédiction ? : ',mat2str(OK_alloc)]);
+disp(['Conditions KKT verifiées pour la décomposition par prédiction ? : ',mat2str(OK_pred)]);
 CheckKKT{1}(cond1_pred);
 CheckKKT{2}(cond2_pred);
 CheckKKT{3}(cond3_pred);
@@ -608,7 +608,7 @@ j = 10;
 disp(['Itération ',mat2str(j),' :']);
 %Decomposition par les prix:
 [OK_prixj,cond1_prixj,cond2_prixj,cond3_prixj,cond4_prixj,cond5_prixj] = Test_KKT(A,b,C,zeros(N,1),Mu_prix_final(:,j),0,0,0,U_prix_final(:,j),0.001);
-disp(['Conditions KKT verifiees pour la decomposition par prix ? : ',mat2str(OK_prixj)]);
+disp(['Conditions KKT verifiées pour la decomposition par prix ? : ',mat2str(OK_prixj)]);
 CheckKKT{1}(cond1_prixj);
 CheckKKT{2}(cond2_prixj);
 CheckKKT{3}(cond3_prixj);
@@ -617,7 +617,7 @@ CheckKKT{5}(cond5_prixj);
 disp(' ');
 %Decomposition par les quantités:
 [OK_allocj,cond1_allocj,cond2_allocj,cond3_allocj,cond4_allocj,cond5_allocj] = Test_KKT(A,b,C,zeros(N,1),Mu_alloc_final(:,j),0,0,0,U_alloc_final(:,j),0.001);
-disp(['Conditions KKT verifiees pour la decomposition par allocation ? : ',mat2str(OK_allocj)]);
+disp(['Conditions KKT verifiées pour la decomposition par allocation ? : ',mat2str(OK_allocj)]);
 CheckKKT{1}(cond1_allocj);
 CheckKKT{2}(cond2_allocj);
 CheckKKT{3}(cond3_allocj);
@@ -626,7 +626,7 @@ CheckKKT{5}(cond5_allocj);
 disp(' ');
 %Decomposition par prediction:
 [OK_predj,cond1_predj,cond2_predj,cond3_predj,cond4_predj,cond5_predj] = Test_KKT(A,b,C,zeros(N,1),Mu_pred_final(:,j),0,0,0,U_pred_final(:,j),0.001);
-disp(['Conditions KKT verifiees pour la decomposition par prédiction ? : ',mat2str(OK_prixj)]);
+disp(['Conditions KKT verifiées pour la decomposition par prédiction ? : ',mat2str(OK_predj)]);
 CheckKKT{1}(cond1_predj);
 CheckKKT{2}(cond2_predj);
 CheckKKT{3}(cond3_predj);
