@@ -13,15 +13,13 @@ function [P_sol,Prix,k,J,t] = DecompositionPrix(N,P0,a,b,Pmax,parametres,paramet
     eps_sp = parametres_sousproblemes.eps_sp;
     kmax_sp = parametres_sousproblemes.kmax_sp;
     mu = zeros(N,1);
-    lambda = zeros(N,1);
    
     k = 1;
     P = zeros(N,1);
     P_prec = P + 10;
     p = 0;
     P_sol = P;
-    Prix = p;
-    
+    Prix = p;    
     
     while( k <= 2 || ((norm(P - P_prec,2) > eps) && k <= kmax))
         P_prec = P;
@@ -35,10 +33,9 @@ function [P_sol,Prix,k,J,t] = DecompositionPrix(N,P0,a,b,Pmax,parametres,paramet
                 %Resolution par Uzawa:
                 param_sp_uzawa = struct('rho', rho_sp_uzawa, ...
                         'mu_ini' , mu(i) , ...
-                        'lambda_ini' , lambda(i) , ...
                         'eps', eps_sp, ...
                         'kmax', kmax_sp);
-                [P(i),lambda(i),mu(i),~] = Uzawa(A_sp,b_sp,0,0,C_in,d_in,param_sp_uzawa);
+                [P(i),~,mu(i),~] = Uzawa(A_sp,b_sp,0,0,C_in,d_in,param_sp_uzawa);
         end
         
         %Coordination:
@@ -47,7 +44,7 @@ function [P_sol,Prix,k,J,t] = DecompositionPrix(N,P0,a,b,Pmax,parametres,paramet
         %Recuperation de la solution a l'iteration k:
         P_sol = [P_sol,P];
         
-        %Recuperation du prix a l'iteration k:
+        %Recuperation du prix à l'iteration k:
         Prix = [Prix,p];
         
         %Incrementation du nombre d'iterations:

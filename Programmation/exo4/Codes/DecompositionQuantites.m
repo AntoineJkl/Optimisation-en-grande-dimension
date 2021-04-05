@@ -1,4 +1,4 @@
-function [P_sol,Multiplicateur,k,J,t] = DecompositionQuantites(N,P0,a,b,Pmax,parametres,parametres_sousproblemes)    
+function [P_sol,Multiplicateur_lambda,k,J,t] = DecompositionQuantites(N,P0,a,b,Pmax,parametres,parametres_sousproblemes)    
     start = tic;
     %Pour ajouter les algorithmes 
     addpath('..\..\Algorithme');
@@ -20,7 +20,7 @@ function [P_sol,Multiplicateur,k,J,t] = DecompositionQuantites(N,P0,a,b,Pmax,par
     P_prec = P + 10;
     omega = zeros(N,1);
     P_sol = [];
-    Multiplicateur = [];
+    Multiplicateur_lambda = [];
        
     while( k <= 2 || ( (norm(P - P_prec) > eps) && k <= kmax))
         P_prec = P;
@@ -48,8 +48,8 @@ function [P_sol,Multiplicateur,k,J,t] = DecompositionQuantites(N,P0,a,b,Pmax,par
         %Recuperation de la solution a chaque iteration:
         P_sol = [P_sol,P];
         
-        %Recuperation du multiplicateur a chaque iteration:
-        Multiplicateur = [Multiplicateur,mean(Lambda)];
+        %Recuperation des multiplicateurs à chaque iteration:
+        Multiplicateur_lambda = [Multiplicateur_lambda,mean(Lambda)];
         
         %Incrementation du nombre d'iterations:
         k = k + 1;

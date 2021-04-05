@@ -65,6 +65,7 @@ AffichageMultiplicateur(Lambdas,Lambda_exact,titre1);
 titre2 = {'Convergence des solutions','pour chaque agent dans le scénario 1','(Décomposition par les prix)'};
 AffichageSolution(P,P_exact,titre2);
 
+
 %%
 %SCENARIO 2 (Decomposition par les prix)
 clc;
@@ -132,6 +133,7 @@ AffichageMultiplicateur(Lambdas,Lambda_exact,titre1);
 titre2 = {'Convergence des solutions','pour chaque agent dans le scénario 2','(Décomposition par les prix)'};
 AffichageSolution(P,P_exact,titre2);
 
+
 %% 
 %SCENARIO 1 (Decomposition par les quantités)
 clc;
@@ -157,7 +159,7 @@ parametres_sousproblemes = struct('rho_sp_uzawa',rho_sp_uzawa,...
                     'eps_sp',eps_sp,...
                     'kmax_sp',kmax_sp);
 
-%Algorithme de decomposition par les prix:
+%Algorithme de decomposition par les quantités:
 [P,Lambdas,k,J_opt,time] = DecompositionQuantites(N,P0,a,b,Pmax,parametres,parametres_sousproblemes);
 P_final = P(:,end);
 
@@ -224,7 +226,7 @@ parametres_sousproblemes = struct('rho_sp_uzawa',rho_sp_uzawa,...
                     'eps_sp',eps_sp,...
                     'kmax_sp',kmax_sp);
 
-%Algorithme de decomposition par les prix:
+%Algorithme de decomposition par les quantités:
 [P,Lambdas,k,J_opt,time] = DecompositionQuantites(N,P0,a,b,Pmax,parametres,parametres_sousproblemes);
 P_final = P(:,end);
 
