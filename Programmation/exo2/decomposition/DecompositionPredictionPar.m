@@ -1,4 +1,4 @@
-function [u,v,w,p,k,J,u_stock] = DecompositionPredictionSeq2(N,A,C,param)
+function [u,v,w,p,k,J,u_stock] = DecompositionPredictionPar(N,A,C,param)
     %N : taille de l'instance du problème
     %A : matrice de la fonction objective de taille (N+1,2,2)
     %C : matrice de contraintes associée aux sous-problèmes de taille (N,2)
@@ -29,7 +29,7 @@ function [u,v,w,p,k,J,u_stock] = DecompositionPredictionSeq2(N,A,C,param)
     
     %Initialisation des hyperparamètres d'Arrow:
     if ismember('rho_sp1',fieldnames(param)) ; rho_sp1=param.rho_sp1 ; else rho_sp1=0.1 ; end
-    if ismember('rho_sp2',fieldnames(param)) ; rho_sp2=param.rho_sp2 ; else rho_sp2=3 ; end
+    if ismember('rho_sp2',fieldnames(param)) ; rho_sp2=param.rho_sp2 ; else rho_sp2=4 ; end
     if ismember('eps_sp',fieldnames(param)) ; eps_sp=param.eps_sp ; else eps_sp=10^(-10) ; end
     if ismember('kmax_sp',fieldnames(param)) ; kmax_sp=param.kmax_sp ; else kmax_sp=50000 ; end
     
@@ -37,7 +37,7 @@ function [u,v,w,p,k,J,u_stock] = DecompositionPredictionSeq2(N,A,C,param)
     if ismember('beta',fieldnames(param)) ; beta=param.beta ; else beta=0.5 ; end
     if ismember('gamma',fieldnames(param)) ; gamma=param.gamma ; else gamma=0.5 ; end
     
-    while( k <= 2 || ((norm(u - u_prec,2)> eps) && k <= kmax))
+    while( k <= 2 || ((norm(u - u_prec,2) > eps) && k <= kmax))
         
         %Initialisation de la valeur optimale
         J=0;
@@ -47,21 +47,6 @@ function [u,v,w,p,k,J,u_stock] = DecompositionPredictionSeq2(N,A,C,param)
         w_prec = w;
         v_prec=v;
         
-        %Décomposition du N+1ème sous-problème
-        u(N+1,:)=-w(1,:);
-        p(1,1)=u(N+1,1)*A(N+1,1,1) ; p(1,2)=u(N+1,2)*A(N+1,2,2);
-        
-        %Incrémentation de la valeur objective pour le N+1ème
-        %sous-problèmes
-        A_sp=zeros(2,2);
-        A_sp(1,1)=A(N+1,1,1) ; A_sp(2,2)=A(N+1,2,2);
-        J=J+(1/2)*(u(N+1,:)*A_sp*u(N+1,:)');
-        
-        %Coordination:
-        if k~=1
-            p = (1-beta).*p_prec +beta.*p;
-        end
-        
         %Décomposition des N premiers sous-problèmes :
         for i = 1:N
             A_sp = zeros(4,4) ; %u1,u2,v1,v2
@@ -70,17 +55,19 @@ function [u,v,w,p,k,J,u_stock] = DecompositionPredictionSeq2(N,A,C,param)
             b_sp = zeros(4,1); %u1,u2,v1,v2
             b_sp(1:2,1)=-p;
             
-            %Contraintes d'inegalite
+            %Contraintes d'ingéalite
             C_in=[1 0 0 0 ; -1 0 0 0 ; 0 1 0 0 ; 0 -1 0 0 ; -1 0 -1 0];
             d_in=[C(i,1) ; 0 ; C(i,2)-C(i,1) ; 0 ; -C(i,1)];
+            C_in2=[-1 0 -1 0];d_in2=-C(i,1);
             
-            %Contrainte d'egalite
+            %Contrainte d'égalité
             C_eq=ones(1,4);
             d_eq=C(i,2);
             
             u_ini = [u(i,:)  v(i,:)]';
+            
             if strcmp(algo,'arrow')
-                %Resolution par Arrow-Hurwicz
+                %Résolution par Arrow-Hurwicz
                 param_sp = struct('rho1', rho_sp1, ...
                         'rho2', rho_sp2, ...
                         'mu_ini' , mu_ini(i,:,:)' , ...
@@ -96,23 +83,38 @@ function [u,v,w,p,k,J,u_stock] = DecompositionPredictionSeq2(N,A,C,param)
                 %Résolution par la méthode du point intérieur
                 fun = @(var) Juv(var,A_sp,b_sp);
                 options = optimoptions('fmincon','Display', 'off','GradObj','on');
-                ub=[] ; lb=[] ; noncol= [] ; 
-                temp = fmincon(fun,u_ini,C_in,d_in,C_eq,d_eq,lb,ub,noncol,options);
+                lb=[0,0,-Inf,-Inf] ; ub=[C(i,1), C(i,2)-C(i,1), +Inf,+Inf] ; noncol= [] ; 
+                temp = fmincon(fun,u_ini,C_in2,d_in2,C_eq,d_eq,lb,ub,noncol,options);
                 u(i,:)=temp(1:2);
                 v(i,:)=temp(3:4);
             end
+            
             %Incrementation de la valeur objective J pour les N premiers
             %sous-problèmes
-            J=J+temp'*A_sp*temp;
+            val=[u_prec(i,:) v_prec(i,:)]';
+            J=J+val'*A_sp*val;
             
         end
         
-        %Coordination de w:
+        %Décomposition du N+1ème sous-problème
+        u(N+1,:)=-w(1,:);
+        p(1,1)=u(N+1,1)*A(N+1,1,1) ; p(1,2)=u(N+1,2)*A(N+1,2,2);
+        
+        %Incrémentation de la valeur objective pour le N+1ème
+        %sous-problèmes
+        A_sp=zeros(2,2);
+        A_sp(1,1)=A(N+1,1,1) ; A_sp(2,2)=A(N+1,2,2);
+        J=J+(1/2)*(u(N+1,:)*A_sp*u(N+1,:)');
+
+        
+        %Coordination:
         if k==1
             w = -gamma*sum(u(1:N,:),1);
         else
+            p = (1-beta).*p_prec +beta.*p;
             w = (1-gamma)*w_prec -gamma*sum(u(1:N,:),1);
         end
+
         
         %Incrementation du nombre d'iterations:
         k = k + 1;
@@ -125,7 +127,6 @@ function [u,v,w,p,k,J,u_stock] = DecompositionPredictionSeq2(N,A,C,param)
     v(1:N,:)=v_prec(1:N,:);
 
     toc;
-
 
 end
 

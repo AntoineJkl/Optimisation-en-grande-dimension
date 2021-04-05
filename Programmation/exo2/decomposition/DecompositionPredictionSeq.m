@@ -57,6 +57,7 @@ function [u,v,w,p,k,J,u_stock] = DecompositionPredictionSeq(N,A,C,param)
             %Contrainte d'inégalité
             C_in=[1 0 0 0 ; -1 0 0 0 ; 0 1 0 0 ; 0 -1 0 0 ; -1 0 -1 0];
             d_in=[C(i,1) ; 0 ; C(i,2)-C(i,1) ; 0 ; -C(i,1)];
+            C_in2=[-1 0 -1 0];d_in2=-C(i,1);
             
             %Contrainte d'égalité
             C_eq=ones(1,4);
@@ -80,7 +81,7 @@ function [u,v,w,p,k,J,u_stock] = DecompositionPredictionSeq(N,A,C,param)
                 %Résolution par la méthode du point intérieur
                 fun = @(var) Juv(var,A_sp,b_sp);
                 options = optimoptions('fmincon','Display', 'off','GradObj','on');
-                ub=[] ; lb=[] ; noncol= [] ; 
+                lb=[0,0,-Inf,-Inf] ; ub=[C(i,1), C(i,2)-C(i,1), +Inf,+Inf] ; noncol= [] ; 
                 temp = fmincon(fun,u_ini,C_in,d_in,C_eq,d_eq,lb,ub,noncol,options);
                 u(i,:)=temp(1:2);
                 v(i,:)=temp(3:4);

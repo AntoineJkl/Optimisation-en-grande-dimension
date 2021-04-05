@@ -1,14 +1,13 @@
-function [A,C] = CreationInstance(N,min_A,max_A,min_C,max_C)
+function [A,C] = CreationInstance(N,min_Ai,max_Ai,min_AN,max_AN,min_C,max_C)
 
 %Creation de A
-r_A=min_A+(max_A-min_A).*rand(N+1,2,2);
-
 A=zeros(N+1,2,2);
-for i=1:(N+1)
-    deb=2*i-1;
-    fin=2*i;
-    A(i,:,:)=diag(r_A(deb:fin));
+for i=1:(N)
+    r=min_Ai+(max_Ai-min_Ai).*rand(1,2);
+    A(i,:,:)=diag(r);
 end
+r=min_AN+(max_AN-min_AN).*rand(1,2);
+A(N+1,:,:)=diag(r);
 
 %Creation de C
 r_C=min_C+(max_C-min_C).*rand(N,2);
