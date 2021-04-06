@@ -1,6 +1,4 @@
 function [U,Lambda,Mu,k] = Uzawa(A,b,C_eq,d_eq,C_in,d_in,param)
-%UZAWA Summary of this function goes here
-%   Detailed explanation goes here
 
     %Arguments d'entree
     if ismember('rho',fieldnames(param)) ; rho=param.rho ; else rho=0.1 ; end

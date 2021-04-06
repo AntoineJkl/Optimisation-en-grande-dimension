@@ -1,7 +1,7 @@
-% SCENARIO 1 (Decomposition par les prix)
+% SCENARIO 1 (Décomposition par les prix)
 clc;
 
-%Donnees du probleme:
+%Données du problème:
 Donnees_SmartGrids_Scenario1;
 
 %Initialisation du problème général:
@@ -22,7 +22,7 @@ parametres_sousproblemes = struct('rho_sp_uzawa',rho_sp_uzawa,...
                     'eps_sp',eps_sp,...
                     'kmax_sp',kmax_sp);
                     
-%Algorithme de decomposition par les prix:
+%Algorithme de décomposition par les prix:
 [P,Lambdas,k,J_opt,time] = DecompositionPrix(N,P0,a,b,Pmax,parametres,parametres_sousproblemes);
 P_final = P(:,end);
 
@@ -67,10 +67,10 @@ AffichageSolution(P,P_exact,titre2);
 
 
 %%
-%SCENARIO 2 (Decomposition par les prix)
+%SCENARIO 2 (Décomposition par les prix)
 clc;
 
-%Donnees du probleme:
+%Données du problème:
 Donnees_SmartGrids_Scenario2;
 
 %Initialisation du problème général:
@@ -91,7 +91,7 @@ parametres_sousproblemes = struct('rho_sp_uzawa',rho_sp_uzawa,...
                     'eps_sp',eps_sp,...
                     'kmax_sp',kmax_sp);
 
-%Algorithme de decomposition par les prix:
+%Algorithme de décomposition par les prix:
 [P,Lambdas,k,J_opt,time] = DecompositionPrix(N,P0,a,b,Pmax,parametres,parametres_sousproblemes);
 P_final = P(:,end);
 
@@ -135,10 +135,10 @@ AffichageSolution(P,P_exact,titre2);
 
 
 %% 
-%SCENARIO 1 (Decomposition par les quantités)
+%SCENARIO 1 (Décomposition par les quantités)
 clc;
 
-%Donnees du probleme:
+%Données du problème:
 Donnees_SmartGrids_Scenario1;
 
 %Initialisation du problème général:
@@ -202,10 +202,10 @@ titre2 = {'Convergence des solutions','pour chaque agent dans le scénario 1','(D
 AffichageSolution(P,P_exact,titre2);
 
 %% 
-%SCENARIO 2 (Decomposition par les quantités)
+%SCENARIO 2 (Décomposition par les quantités)
 clc;
 
-%Donnees du probleme:
+%Données du problème:
 Donnees_SmartGrids_Scenario2;
 
 %Initialisation du problème général:
@@ -226,7 +226,7 @@ parametres_sousproblemes = struct('rho_sp_uzawa',rho_sp_uzawa,...
                     'eps_sp',eps_sp,...
                     'kmax_sp',kmax_sp);
 
-%Algorithme de decomposition par les quantités:
+%Algorithme de décomposition par les quantités:
 [P,Lambdas,k,J_opt,time] = DecompositionQuantites(N,P0,a,b,Pmax,parametres,parametres_sousproblemes);
 P_final = P(:,end);
 

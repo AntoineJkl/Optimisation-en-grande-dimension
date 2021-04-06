@@ -1,14 +1,14 @@
 function [P_sol,Prix,k,J,t] = DecompositionPrix(N,P0,a,b,Pmax,parametres,parametres_sousproblemes)
     start = tic;
-    %Lien vers les algorithmes 
+    %Pour ajouter les algorithmes :
     addpath('..\..\Algorithme');
 
-    %Initialisation generale:
+    %Initialisation generale :
     rho = parametres.rho;
     eps = parametres.eps;
     kmax = parametres.kmax;
     
-    %Initialisation des sous-problemes:
+    %Initialisation des sous-problèmes :
     rho_sp_uzawa = parametres_sousproblemes.rho_sp_uzawa;
     eps_sp = parametres_sousproblemes.eps_sp;
     kmax_sp = parametres_sousproblemes.kmax_sp;
@@ -26,11 +26,13 @@ function [P_sol,Prix,k,J,t] = DecompositionPrix(N,P0,a,b,Pmax,parametres,paramet
         
         disp(['Iterration: ',num2str(k)]);
         
-        %Décomposition:
+        %Décomposition :
         for i = 1:N
-                %Donnees des sous-problemes:
+            
+                %Données des sous-problèmes :
                 A_sp = a(i); b_sp = -p + 2*a(i)*P0(i); C_in = 1; d_in = Pmax(i);
-                %Resolution par Uzawa:
+                
+                %Résolution par Uzawa :
                 param_sp_uzawa = struct('rho', rho_sp_uzawa, ...
                         'mu_ini' , mu(i) , ...
                         'eps', eps_sp, ...
@@ -38,16 +40,16 @@ function [P_sol,Prix,k,J,t] = DecompositionPrix(N,P0,a,b,Pmax,parametres,paramet
                 [P(i),~,mu(i),~] = Uzawa(A_sp,b_sp,0,0,C_in,d_in,param_sp_uzawa);
         end
         
-        %Coordination:
+        %Coordination :
         p = p + rho*sum(P);
         
-        %Recuperation de la solution a l'iteration k:
+        %Récupération de la solution a l'itération k :
         P_sol = [P_sol,P];
         
-        %Recuperation du prix à l'iteration k:
+        %Récupération du prix à l'itération k:
         Prix = [Prix,p];
         
-        %Incrementation du nombre d'iterations:
+        %Incrémentation du nombre d'itérations:
         k = k + 1;
     end
     

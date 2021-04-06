@@ -7,7 +7,7 @@ a = zeros(N,1);
 b = zeros(N,1);
 Pmax = zeros(N,1);
 
-%Centrale a charbon:
+%Centrale à charbon:
 P0(1) = 8.5;
 a(1) = 10;
 b(1) = 1000;
