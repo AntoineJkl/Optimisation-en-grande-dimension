@@ -1,7 +1,7 @@
 function [u,Mu_,k,J,t2,U_final,Mu_final] = DecompositionQuantites(N,A,b,C,parametres,parametres_sousproblemes)
     t1=tic;
     %Pour ajouter les algorithmes (Uzawa et Arrow)
-    addpath('..\Algorithme');
+    addpath('..\..\Algorithme');
     
     %Paramètres;
     if ismember('rho',fieldnames(parametres)) ; rho=parametres.rho ; else rho=0.05 ; end

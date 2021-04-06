@@ -682,6 +682,7 @@ clc;
 
 %CREATION DE L'INSTANCE:
 N = 200;
+%N = 251;
 [A,b,C] = CreateInstance(N);
 
 %PARAMETRES GENERAUX:
@@ -756,6 +757,7 @@ clc;
 
 %CREATION DE L'INSTANCE:
 N = 200;
+%N = 251;
 [A,b,C] = CreateInstance(N);
 
 %PARAMETRES GENERAUX:
@@ -826,6 +828,7 @@ clc;
 
 %CREATION DE L'INSTANCE:
 N = 200;
+%N = 251;
 [A,b,C] = CreateInstance(N);
 
 %PARAMETRES GENERAUX:

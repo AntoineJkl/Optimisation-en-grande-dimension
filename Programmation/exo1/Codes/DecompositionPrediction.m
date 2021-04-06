@@ -2,7 +2,7 @@ function [u,p,k,J,t2,U_final,Mu_final] = DecompositionPrediction(N,A,b,C,paramet
     t1=tic;
     
     %Pour ajouter les algorithmes (Uzawa et Arrow)
-    addpath('..\Algorithme');
+    addpath('..\..\Algorithme');
     
     %Paramètres;
     if ismember('eps',fieldnames(parametres)) ; eps=parametres.eps ; else eps=10e-5 ; end
